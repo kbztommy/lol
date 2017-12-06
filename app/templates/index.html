@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+</head>
+
+<body>
+    <form action='/get_summoner'>
+        <input type="text" name="name">
+        <input type="submit">
+    </form>
+    <ol>
+        {% for summoner in summoner_list %}
+        <li>
+            <a href="/get_summoner_detail/{{ summoner.name }}">{{ summoner.name }}</a>
+        </li>
+        {% endfor %}
+    </ol>
+
+</body>
+
+</html>
