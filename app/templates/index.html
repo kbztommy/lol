@@ -12,4 +12,12 @@
                     {% endfor %}
                 </ol>
             </main>
+
+            <form class="form-inline" action="/post_summoner" method="POST">
+                <div class="form-group">
+                        <label for="summonerName">Summoner Name</label>
+                        <input name="summonerName" type="text" class="form-control" id="summonerName" placeholder="Summoner Name" >
+                      </div>
+                <button class="btn btn-primary" type="submiit">新增</button>
+            </form>
         {% endblock %}    
