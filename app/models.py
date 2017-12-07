@@ -23,6 +23,7 @@ class User(db.Model, UserMixin):
     roles = db.relationship('Role', secondary=roles_users,
                             backref=db.backref('users', lazy='dynamic'))
 
+
 class Summoner(db.Model):
     __tablename__ = 'summoner'
     id = db.Column(db.BigInteger, primary_key=True)
@@ -31,3 +32,11 @@ class Summoner(db.Model):
     profile_icon_id = db.Column(db.INTEGER)
     revision_date = db.Column(db.BigInteger)
     summoner_level = db.Column(db.BigInteger)
+
+    def __init__(self, **kwargs):
+        self.id = kwargs['id']
+        self.account_id = kwargs['accountId']
+        self.name = kwargs['name']
+        self.profile_icon_id = kwargs['profileIconId']
+        self.revision_date = kwargs['revisionDate']
+        self.summoner_level = kwargs['summonerLevel']

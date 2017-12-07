@@ -1,7 +1,6 @@
 from flask import render_template, request, current_app
 from flask_security import login_required
 from . import main
-from ..import db
 from ..models import Summoner
 
 

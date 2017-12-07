@@ -2,8 +2,9 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from config import config
 from flask_security import Security, SQLAlchemyUserDatastore
-from .extensions import db, security
+from .extensions import db, security, bootstrap
 from .main import main as main_blueprint
+from .filters import time_format_filter
 
 def create_app(config_name):
     app = Flask(__name__)
@@ -16,8 +17,8 @@ def create_app(config_name):
     user_datastore = SQLAlchemyUserDatastore(db, User, Role)
     security.init_app(app, user_datastore)
 
-    
+    bootstrap.init_app(app)
+
     app.register_blueprint(main_blueprint)
-
+    app.jinja_env.filters['timestamp_format'] = time_format_filter
     return app
-
