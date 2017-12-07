@@ -1,0 +1,17 @@
+{% extends "bootstrap/base.html" %} {% block title %}my_lol_app{% endblock %} {% block content %}
+<main class="container">
+    <section>
+        <table class="table table-striped">
+            {% for game_match in game_match_list %}
+            <tr>
+                <td>{{game_match.champion|champion_id_format}}</td>
+                <td>{{game_match.lane}}</td>
+                <td>{{game_match.queue}}</td>
+                <td>{{game_match.match_timestamp|timestamp_format}}</td>
+            </tr>
+            {% endfor %}
+        </table>
+
+    </section>
+</main>
+{% endblock %}

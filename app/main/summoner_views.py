@@ -26,8 +26,8 @@ def get_summoner():
 @main.route('/get_summoner_detail/<name>', methods=["GET", "POST"])
 @login_required
 def get_summoner_detail(name):
-    summoner = Summoner.query.filter_by(name=name).first()
-    return render_template('get_summoner_detail.html', summoner=summoner)
+    summoner = Summoner.query.filter_by(name=name).first_or_404()
+    return render_template('summoner_detail.html', summoner=summoner)
 
 
 @main.route('/put_summoner_detail/<account_id>', methods=["GET"])
@@ -37,7 +37,7 @@ def put_summoner_detail(account_id):
     summoner = Summoner(**summoner_dto)
     db.session.merge(summoner)
     db.session.commit()
-    return render_template('get_summoner_detail.html', summoner=summoner)
+    return render_template('summoner_detail.html', summoner=summoner)
 
 
 @main.route('/post_summoner', methods=["POST"])
