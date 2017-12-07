@@ -10,8 +10,8 @@
             <h3>{{summoner.update_date|timestamp_format}}</h3>
             <h3><a href="/put_summoner_detail/{{summoner.account_id}}" class="btn btn-primary">更新</a></h3>
             <h3><a href="/get_all_game_match/{{summoner.account_id}}" class="btn btn-primary">對戰紀錄</a></h3>
-        </section>
-        
+            <h3><a href="/post_recent_game_match/{{summoner.account_id}}" class="btn btn-primary">更新對戰紀錄</a></h3>
+        </section> 
     </div>
     
 {% endblock %} 

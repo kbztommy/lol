@@ -1,7 +1,8 @@
 from .extensions import db
 from flask_security import UserMixin, RoleMixin
 import time
-
+from sqlalchemy import ForeignKey, PrimaryKeyConstraint, ForeignKeyConstraint
+from sqlalchemy.orm import relationship
 # Define models
 roles_users = db.Table('roles_users',
                        db.Column('user_id', db.Integer(),
@@ -81,3 +82,89 @@ class ChampionCode(db.Model):
         self.title = kwargs['title']
         self.key = kwargs['key']
         self.name = kwargs['name']
+
+
+class Game(db.Model):
+    __tablename__ = 'game'
+    game_id = db.Column(db.BigInteger, primary_key=True)
+    game_version = db.Column(db.String(45))
+    platform_id = db.Column(db.String(45))
+    game_mode = db.Column(db.String(45))
+    map_id = db.Column(db.INTEGER)
+    game_type = db.Column(db.String(45))
+    game_duration = db.Column(db.BigInteger)
+    game_creation = db.Column(db.BigInteger)
+
+    def __init__(self, **kwargs):
+        self.game_id = kwargs.get('gameId')
+        self.game_version = kwargs.get('gameVersion')
+        self.platform_id = kwargs.get('platformId')
+        self.game_mode = kwargs.get('gameMode')
+        self.map_id = kwargs.get('mapId')
+        self.game_type = kwargs.get('gameType')
+        self.game_duration = kwargs.get('gameDuration')
+        self.game_creation = kwargs.get('gameCreation')
+
+
+class GameParticipant(db.Model):
+    __tablename__ = 'game_participant'
+    game_id = db.Column(db.BigInteger)
+    account_id = db.Column(db.BigInteger)
+    summoner_name = db.Column(db.String(100))
+    participant_id = db.Column(db.INTEGER)
+    team_id = db.Column(db.INTEGER)
+    win = db.Column(db.Boolean)
+    champion_id = db.Column(db.INTEGER)
+    spell1_id = db.Column(db.INTEGER)
+    spell2_id = db.Column(db.INTEGER)
+    kills = db.Column(db.INTEGER)
+    deaths = db.Column(db.INTEGER)
+    assists = db.Column(db.INTEGER)
+    wardsKilled = db.Column(db.INTEGER)
+    wardsPlaced = db.Column(db.INTEGER)
+    sightWardsBoughtInGame = db.Column(db.INTEGER)
+    visionScore = db.Column(db.INTEGER)
+    timeCCingOthers = db.Column(db.BigInteger)
+    item0 = db.Column(db.INTEGER)
+    item1 = db.Column(db.INTEGER)
+    item2 = db.Column(db.INTEGER)
+    item3 = db.Column(db.INTEGER)
+    item4 = db.Column(db.INTEGER)
+    item5 = db.Column(db.INTEGER)
+    item6 = db.Column(db.INTEGER)
+    game_match = relationship("GameMatch")
+
+    __table_args__ = (
+        PrimaryKeyConstraint('game_id', 'account_id'), ForeignKeyConstraint(
+            ['game_id', 'account_id'],
+            ['game_match.game_id', 'game_match.account_id']
+        ),
+    )
+
+    def __init__(self, game_id, participant_identity, participant):
+        stats = participant.get('stats')
+        self.game_id = game_id
+        self.account_id = participant_identity.get('player').get('accountId')
+        self.summoner_name = participant_identity.get(
+            'player').get('summonerName')
+        self.participant_id = participant_identity.get('participantId')
+        self.team_id = participant.get('teamId')
+        self.win = stats.get('win')
+        self.champion_id = participant.get('championId')
+        self.spell1_id = participant.get('spell1Id')
+        self.spell2_id = participant.get('spell2Id')
+        self.kills = stats.get('kills')
+        self.deaths = stats.get('deaths')
+        self.assists = stats.get('assists')
+        self.wardsKilled = stats.get('wardsKilled')
+        self.wardsPlaced = stats.get('wardsPlaced')
+        self.sightWardsBoughtInGame = stats.get('sightWardsBoughtInGame')
+        self.visionScore = stats.get('visionScore')
+        self.timeCCingOthers = stats.get('timeCCingOthers')
+        self.item0 = stats.get('item0')
+        self.item1 = stats.get('item1')
+        self.item2 = stats.get('item2')
+        self.item3 = stats.get('item3')
+        self.item4 = stats.get('item4')
+        self.item5 = stats.get('item5')
+        self.item6 = stats.get('item6')
