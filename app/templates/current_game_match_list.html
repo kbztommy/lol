@@ -9,6 +9,9 @@
                 <td>{{game_match.lane}}</td>
                 <td>{{game_match.queue}}</td>
                 <td>{{game_match.match_timestamp|timestamp_format}}</td>
+                <td>
+                    <a href="/get_game_detail/{{game_match.game_id}}">詳細數據</a>
+                </td>
             </tr>
             {% endfor %}
         </table>

@@ -1,0 +1,95 @@
+{% extends "bootstrap/base.html" %} {% block title %}game detail{% endblock %} {% block content %}
+<main class="container">
+    <section>
+        <table class="table table-striped">
+            <thead>
+                <th>#</th>
+                <th>summoner_name</th>
+                <th>champion</th>
+                <th>spell1</th>
+                <th>spell2</th>
+                <th>擊殺</th>
+                <th>死亡</th>
+                <th>助攻</th>
+            </thead>
+            <tbody>
+                {% for game_detail in game_detail_list %}
+                <tr {% if game_detail.win %} class="success" {% else %} class="danger" {% endif %}>
+                    <td>{{loop.index}}</td>
+                    <td>{{game_detail.summoner_name}}</td>
+                    <td>{{game_detail.champion_id|champion_id_format}}</td>
+                    <td>{{game_detail.spell1_id}}</td>
+                    <td>{{game_detail.spell2_id}}</td>
+                    <td>{{game_detail.kills}}</td>
+                    <td>{{game_detail.deaths}}</td>
+                    <td>{{game_detail.assists}}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </section>
+
+    <section>
+        <table class="table table-striped">
+            <thead>
+                <th>#</th>
+                <th>summoner_name</th>
+                <th>champion</th>
+                <th>拆眼數</th>
+                <th>插眼數</th>
+                <th>真眼數</th>
+                <th>visionScore</th>
+                <th>timeCCingOthers</th>
+            </thead>
+            <tbody>
+                {% for game_detail in game_detail_list %}
+                <tr {% if game_detail.win %} class="success" {% else %} class="danger" {% endif %}>
+                    <td>{{loop.index}}</td>
+                    <td>{{game_detail.summoner_name}}</td>
+                    <td>{{game_detail.champion_id|champion_id_format}}</td>
+                    <td>{{game_detail.wardsKilled}}</td>
+                    <td>{{game_detail.wardsPlaced}}</td>
+                    <td>{{game_detail.sightWardsBoughtInGame}}</td>
+                    <td>{{game_detail.visionScore}}</td>
+                    <td>{{game_detail.timeCCingOthers}}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </section>
+
+    <section>
+        <table class="table table-striped">
+            <thead>
+                <th>#</th>
+                <th>summoner_name</th>
+                <th>champion</th>
+                <th>裝備1</th>
+                <th>裝備2</th>
+                <th>裝備3</th>
+                <th>裝備4</th>
+                <th>裝備5</th>
+                <th>裝備6</th>
+                <th>裝備7</th>
+            </thead>
+            <tbody>
+                {% for game_detail in game_detail_list %}
+                <tr {% if game_detail.win %} class="success" {% else %} class="danger" {% endif %}>
+                    <td>{{loop.index}}</td>
+                    <td>{{game_detail.summoner_name}}</td>
+                    <td>{{game_detail.champion_id|champion_id_format}}</td>
+                    <td>{{game_detail.item0|item_id_format}}</td>
+                    <td>{{game_detail.item1|item_id_format}}</td>
+                    <td>{{game_detail.item2|item_id_format}}</td>
+                    <td>{{game_detail.item3|item_id_format}}</td>
+                    <td>{{game_detail.item4|item_id_format}}</td>
+                    <td>{{game_detail.item5|item_id_format}}</td>
+                    <td>{{game_detail.item6|item_id_format}}</td>
+                    <td>{{game_detail.item7|item_id_format}}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </section>
+</main>
+{% endblock %}

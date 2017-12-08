@@ -1,11 +1,11 @@
 import time
 import datetime
 from io import BytesIO
+from flask import current_app
 from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 import matplotlib.pyplot as plt
 from ..models import GameMatch, Game, GameParticipant
-from ..riot_api.game_api import get_matches_by_account_id, get_game, get_matches_by_account_id
-from flask import current_app
+from ..riot_api.game_api import get_matches_by_account_id, get_game
 from ..extensions import db
 from ..filters import get_champion_id_map
 
@@ -46,7 +46,7 @@ def query_not_yet_added_game_count():
 def __get_need_update_game_id_list():
     game_id_list = []
     result = db.session.execute(
-        'SELECT DISTINCT gm.game_id FROM game_match gm WHERE NOT EXISTS (SELECT g.game_id FROM game g WHERE g.game_id = gm.game_id) ORDER BY gm.game_id LIMIT 10')
+        'SELECT DISTINCT gm.game_id FROM game_match gm WHERE NOT EXISTS (SELECT g.game_id FROM game g WHERE g.game_id = gm.game_id) ORDER BY gm.game_id DESC LIMIT 10')
     for row in result:
         game_id_list.append(row['game_id'])
     return game_id_list
@@ -71,7 +71,13 @@ def __add_game(game_id):
         raise
 
 
-def query_statistics_champion_use(account_id, lane=None):
+def query_all_game_participant(game_id):
+    game_participant_list = GameParticipant.query.filter_by(
+        game_id = game_id).order_by(GameParticipant.participant_id).all()
+    return game_participant_list
+
+
+def query_statistics_champion_use(account_id, lane=''):
     now = int(time.time() * 1000)
     seven_day_ago = int(time.mktime(
         (datetime.datetime.now() - datetime.timedelta(days=7)).timetuple()) * 1000)
@@ -84,6 +90,8 @@ def query_statistics_champion_use(account_id, lane=None):
 
     counts = champion_count_map.values()
     fig1, ax1 = plt.subplots()
+    current_app.logger.debug(counts)
+    current_app.logger.debug(champions)
     ax1.pie(counts, labels=champions, autopct='%1.1f%%')
     ax1.axis('equal')
     canvas = FigureCanvas(fig1)
@@ -92,10 +100,11 @@ def query_statistics_champion_use(account_id, lane=None):
     return png_output
 
 
-def __query_recent_champion_count_map(account_id, start_time, end_time, lane=None):
+def __query_recent_champion_count_map(account_id, start_time, end_time, lane=''):
     champion_count_map = dict()
     game_participant_do_list = list()
-    if lane is None:
+
+    if not lane:
         game_participant_do_list = db.session.query(GameParticipant).join(GameMatch).filter(GameMatch.match_timestamp >= start_time).filter(
             GameMatch.match_timestamp <= end_time).filter(GameParticipant.account_id == account_id)
     else:

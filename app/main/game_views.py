@@ -2,7 +2,7 @@ from flask import render_template, redirect, url_for
 from flask_security import login_required
 from . import main
 from ..service.game_service import query_game_match_list, update_recent_game_detail, add_recent_game_match
-
+from ..service.game_service import query_all_game_participant
 
 @main.route('/get_all_game_match/<account_id>', methods=['GET', 'POST'])
 @login_required
@@ -23,3 +23,10 @@ def post_recent_game_match(account_id):
 def put_recent_game_detail():
     update_recent_game_detail()
     return redirect(url_for('main.index'))
+
+
+@main.route('/get_game_detail/<game_id>', methods=['GET'])
+@login_required
+def get_game_detail(game_id):
+    game_detail_list = query_all_game_participant(game_id)
+    return render_template('game_detail.html', game_detail_list=game_detail_list)

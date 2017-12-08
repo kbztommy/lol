@@ -210,3 +210,14 @@ class LeagueItem(db.Model):
         self.veteran = league_item.get('veteran')
         self.fresh_blood = league_item.get('freshBlood')
         self.inactive = league_item.get('inactive')
+
+class ItemCode(db.Model):
+    __tablename__ = 'item_code'
+    item_id = db.Column(db.INTEGER, primary_key=True)
+    name = db.Column(db.String(100))
+    plaintext = db.Column(db.String(200))
+
+    def __init__(self, **kwargs):
+        self.item_id = kwargs.get('id')
+        self.name = kwargs.get('name')
+        self.plaintext = kwargs.get('plaintext')
