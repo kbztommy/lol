@@ -1,13 +1,13 @@
 from flask import render_template, redirect, url_for
 from flask_security import login_required
 from . import main
-from ..service.game_service import get_game_match_list, update_recent_game_detail, add_recent_game_match
+from ..service.game_service import query_game_match_list, update_recent_game_detail, add_recent_game_match
 
 
 @main.route('/get_all_game_match/<account_id>', methods=['GET', 'POST'])
 @login_required
 def get_all_game_match(account_id):
-    game_match_list = get_game_match_list(account_id)
+    game_match_list = query_game_match_list(account_id)
     return render_template('current_game_match_list.html', game_match_list=game_match_list)
 
 
@@ -15,8 +15,7 @@ def get_all_game_match(account_id):
 @login_required
 def post_recent_game_match(account_id):
     add_recent_game_match(account_id)
-    game_match_list = get_game_match_list(account_id)
-    return render_template('current_game_match_list.html', game_match_list=game_match_list)
+    return redirect(url_for('main.get_all_game_match', account_id=account_id))
 
 
 @main.route('/put_recent_game_detail', methods=['GET', 'POST'])

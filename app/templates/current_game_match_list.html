@@ -4,6 +4,7 @@
         <table class="table table-striped">
             {% for game_match in game_match_list %}
             <tr>
+                <td>{{loop.index}}</td>
                 <td>{{game_match.champion|champion_id_format}}</td>
                 <td>{{game_match.lane}}</td>
                 <td>{{game_match.queue}}</td>

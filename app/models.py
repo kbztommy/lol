@@ -168,3 +168,45 @@ class GameParticipant(db.Model):
         self.item4 = stats.get('item4')
         self.item5 = stats.get('item5')
         self.item6 = stats.get('item6')
+
+
+class League(db.Model):
+    __tablename__ = 'league'
+    league_id = db.Column(db.String(100), primary_key=True)
+    tier = db.Column(db.String(50))
+    queue = db.Column(db.String(50))
+    name = db.Column(db.String(50))
+
+    def __init__(self, **kwargs):
+        self.league_id = kwargs.get('leagueId')
+        self.tier = kwargs.get('tier')
+        self.queue = kwargs.get('queue')
+        self.name = kwargs.get('name')
+
+
+class LeagueItem(db.Model):
+    __tablename__ = 'league_item'
+    league_id = db.Column(db.String(100), primary_key=True)
+    player_or_team_id = db.Column(db.BigInteger, primary_key=True)
+    player_or_team_name = db.Column(db.String(100))
+    league_points = db.Column(db.INTEGER)
+    rank = db.Column(db.String(45))
+    wins = db.Column(db.INTEGER)
+    losses = db.Column(db.INTEGER)
+    hot_streak = db.Column(db.Boolean)
+    veteran = db.Column(db.Boolean)
+    fresh_blood = db.Column(db.Boolean)
+    inactive = db.Column(db.Boolean)
+
+    def __init__(self, league, league_item):
+        self.league_id = league.get('leagueId')
+        self.player_or_team_id = league_item.get('playerOrTeamId')
+        self.player_or_team_name = league_item.get('playerOrTeamName')
+        self.league_points = league_item.get('leaguePoints')
+        self.rank = league_item.get('rank')
+        self.wins = league_item.get('wins')
+        self.losses = league_item.get('losses')
+        self.hot_streak = league_item.get('hotStreak')
+        self.veteran = league_item.get('veteran')
+        self.fresh_blood = league_item.get('freshBlood')
+        self.inactive = league_item.get('inactive')

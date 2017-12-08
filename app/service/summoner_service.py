@@ -3,12 +3,12 @@ from ..riot_api.summoner_api import get_summoner_by_account_id, get_summoner_by_
 from ..models import Summoner
 
 
-def get_all_summoners():
+def query_all_summoners():
     summoner_list = Summoner.query.all()
     return summoner_list
 
 
-def get_one_summoner_by_name(summoner_name):
+def query_one_summoner_by_name(summoner_name):
     summoner = Summoner.query.filter_by(name=summoner_name).first_or_404()
     return summoner
 

@@ -4,9 +4,9 @@ from flask import current_app
 from ..extensions import db
 
 
-def get_game_match_list(account_id):
+def query_game_match_list(account_id):
     game_match_list = GameMatch.query.filter_by(
-        account_id=account_id).order_by(GameMatch.game_id.desc()).all()
+        account_id=account_id).order_by(GameMatch.match_timestamp.desc()).all()
     return game_match_list
 
 
@@ -29,6 +29,12 @@ def add_recent_game_match(account_id):
     except:
         db.session.rollback()
         raise
+
+
+def query_not_yet_added_game_count():
+    not_yet_added_game_count = db.session.execute(
+        'SELECT DISTINCT count(gm.game_id) FROM game_match gm WHERE NOT EXISTS (SELECT g.game_id FROM game g WHERE g.game_id = gm.game_id)')
+    return not_yet_added_game_count.fetchone()[0]
 
 
 def __get_need_update_game_id_list():

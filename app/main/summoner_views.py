@@ -1,21 +1,23 @@
 from flask import render_template, request,  redirect, url_for
 from flask_security import login_required
 from . import main
-from ..service.summoner_service import get_all_summoners, get_one_summoner_by_name
+from ..service.summoner_service import query_all_summoners, query_one_summoner_by_name
 from ..service.summoner_service import update_summoner_by_account_id, add_summoner_by_name
+from ..service.game_service import query_not_yet_added_game_count
 
 
 @main.route('/', methods=['GET', 'POST'])
 @login_required
 def index():
-    summoner_list = get_all_summoners()
-    return render_template('index.html', summoner_list=summoner_list)
+    summoner_list = query_all_summoners()
+    updated_count = query_not_yet_added_game_count()
+    return render_template('index.html', summoner_list=summoner_list, updated_count=updated_count)
 
 
 @main.route('/get_summoner_detail/<name>', methods=["GET", "POST"])
 @login_required
 def get_summoner_detail(name):
-    summoner = get_one_summoner_by_name(name)
+    summoner = query_one_summoner_by_name(name)
     return render_template('summoner_detail.html', summoner=summoner)
 
 
