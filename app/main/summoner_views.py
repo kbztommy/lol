@@ -1,9 +1,9 @@
-from flask import render_template, request,  redirect, url_for
+from flask import render_template, request,  redirect, url_for, make_response
 from flask_security import login_required
 from . import main
 from ..service.summoner_service import query_all_summoners, query_one_summoner_by_name
 from ..service.summoner_service import update_summoner_by_account_id, add_summoner_by_name
-from ..service.game_service import query_not_yet_added_game_count
+from ..service.game_service import query_not_yet_added_game_count, query_statistics_champion_use
 
 
 @main.route('/', methods=['GET', 'POST'])
@@ -26,6 +26,16 @@ def get_summoner_detail(name):
 def put_summoner_detail(account_id):
     summoner = update_summoner_by_account_id(account_id)
     return render_template('summoner_detail.html', summoner=summoner)
+
+
+@main.route('/get_statistics_champion_use/<account_id>', methods=["GET"])
+@login_required
+def get_statistics_champion_use(account_id):
+    lane = request.values['lane']
+    png_output = query_statistics_champion_use(account_id, lane)
+    response = make_response(png_output.getvalue())
+    response.headers['Content-Type'] = 'image/png'
+    return response
 
 
 @main.route('/post_summoner', methods=["POST"])

@@ -1,9 +1,11 @@
-from jinja2 import Markup
 from datetime import datetime
-from .models import ChampionCode
-from flask import current_app as app
 
-champion_id_map = dict()
+from flask import current_app as app
+from jinja2 import Markup
+from .models import ChampionCode
+
+
+__champion_id_map = dict()
 
 
 def time_format_filter(t):
@@ -14,10 +16,19 @@ def time_format_filter(t):
 
 
 def champion_id_filter(champion_id):
-    count = len(champion_id_map)
+    id_name_map = get_champion_id_map()
+    return id_name_map[champion_id]
+
+
+def __init_champion_id_map():
+    app.logger.debug("init champion_id_map")
+    champion_code_do_list = ChampionCode.query.all()
+    for champion_code in champion_code_do_list:
+        __champion_id_map[champion_code.champion_id] = champion_code.key
+
+
+def get_champion_id_map():
+    count = len(__champion_id_map)
     if count == 0:
-        app.logger.debug("init champion_id_map")
-        champion_code_do_list = ChampionCode.query.all()
-        for champion_code in champion_code_do_list:
-            champion_id_map[champion_code.champion_id] = champion_code.key
-    return champion_id_map[champion_id]
+        __init_champion_id_map()
+    return __champion_id_map.copy()

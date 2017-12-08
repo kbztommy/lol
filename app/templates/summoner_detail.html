@@ -1,17 +1,30 @@
-{% extends "bootstrap/base.html" %} 
-{% block title %}{{summoner.name}}{% endblock %} 
+{% extends "bootstrap/base.html" %} {% block title %}{{summoner.name}}{% endblock %} {% block content %}
+<div class="container">
+    <section>
+        <h2>{{summoner.name}}</h2>
+        <h3>{{summoner.summoner_level}}</h3>
+        <h3>{{summoner.revision_date|timestamp_format}}</h3>
+        <h3>{{summoner.update_date|timestamp_format}}</h3>
+        <h3>
+            <a href="/put_summoner_detail/{{summoner.account_id}}" class="btn btn-primary">更新</a>
+        </h3>
+        <h3>
+            <a href="/get_all_game_match/{{summoner.account_id}}" class="btn btn-primary">對戰紀錄</a>
+        </h3>
+        <h3>
+            <a href="/post_recent_game_match/{{summoner.account_id}}" class="btn btn-primary">更新對戰紀錄</a>
+        </h3>
+    </section>
 
-{% block content %}
-    <div class="container">
-        <section>
-            <h2>{{summoner.name}}</h2>
-            <h3>{{summoner.summoner_level}}</h3>
-            <h3>{{summoner.revision_date|timestamp_format}}</h3>
-            <h3>{{summoner.update_date|timestamp_format}}</h3>
-            <h3><a href="/put_summoner_detail/{{summoner.account_id}}" class="btn btn-primary">更新</a></h3>
-            <h3><a href="/get_all_game_match/{{summoner.account_id}}" class="btn btn-primary">對戰紀錄</a></h3>
-            <h3><a href="/post_recent_game_match/{{summoner.account_id}}" class="btn btn-primary">更新對戰紀錄</a></h3>
-        </section> 
-    </div>
-    
-{% endblock %} 
+    <section>
+        <form class="form-inline" action="/get_statistics_champion_use/{{summoner.account_id}}">
+            <div class="form-group">
+                <label for="lane">Lane</label>
+                <input name="lane" type="text" class="form-control" id="lane" placeholder="BOTTOM">
+            </div>
+            <button class="btn btn-primary" type="submiit">submit</button>
+        </form>
+    </section>
+</div>
+
+{% endblock %}

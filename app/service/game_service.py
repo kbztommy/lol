@@ -1,7 +1,13 @@
+import time
+import datetime
+from io import BytesIO
+from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
+import matplotlib.pyplot as plt
 from ..models import GameMatch, Game, GameParticipant
 from ..riot_api.game_api import get_matches_by_account_id, get_game, get_matches_by_account_id
 from flask import current_app
 from ..extensions import db
+from ..filters import get_champion_id_map
 
 
 def query_game_match_list(account_id):
@@ -63,6 +69,43 @@ def __add_game(game_id):
     except:
         db.session.rollback()
         raise
+
+
+def query_statistics_champion_use(account_id, lane=None):
+    now = int(time.time() * 1000)
+    seven_day_ago = int(time.mktime(
+        (datetime.datetime.now() - datetime.timedelta(days=7)).timetuple()) * 1000)
+    champion_count_map = __query_recent_champion_count_map(
+        account_id, seven_day_ago, now, lane)
+    champions_code_map = get_champion_id_map()
+    champions = list()
+    for champion_id in champion_count_map:
+        champions.append(champions_code_map[champion_id])
+
+    counts = champion_count_map.values()
+    fig1, ax1 = plt.subplots()
+    ax1.pie(counts, labels=champions, autopct='%1.1f%%')
+    ax1.axis('equal')
+    canvas = FigureCanvas(fig1)
+    png_output = BytesIO()
+    canvas.print_png(png_output)
+    return png_output
+
+
+def __query_recent_champion_count_map(account_id, start_time, end_time, lane=None):
+    champion_count_map = dict()
+    game_participant_do_list = list()
+    if lane is None:
+        game_participant_do_list = db.session.query(GameParticipant).join(GameMatch).filter(GameMatch.match_timestamp >= start_time).filter(
+            GameMatch.match_timestamp <= end_time).filter(GameParticipant.account_id == account_id)
+    else:
+        game_participant_do_list = db.session.query(GameParticipant).join(GameMatch).filter(GameMatch.match_timestamp >= start_time).filter(
+            GameMatch.match_timestamp <= end_time).filter(GameParticipant.account_id == account_id).filter(GameMatch.lane == lane)
+    for game_participant_do in game_participant_do_list:
+        champion_count_map[game_participant_do.champion_id] = champion_count_map.get(
+            game_participant_do.champion_id, 0) + 1
+
+    return champion_count_map
 
 
 def __get_participant_list(game_id, participant_identity_map, participant_map):
