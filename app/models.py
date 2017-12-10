@@ -156,8 +156,8 @@ class GameParticipant(db.Model):
         self.kills = stats.get('kills')
         self.deaths = stats.get('deaths')
         self.assists = stats.get('assists')
-        self.wardsKilled = stats.get('wardsKilled')
-        self.wardsPlaced = stats.get('wardsPlaced')
+        self.wardsKilled = stats.get('wardsKilled', 0)
+        self.wardsPlaced = stats.get('wardsPlaced', 0)
         self.sightWardsBoughtInGame = stats.get('sightWardsBoughtInGame')
         self.visionScore = stats.get('visionScore')
         self.timeCCingOthers = stats.get('timeCCingOthers')
@@ -210,6 +210,7 @@ class LeagueItem(db.Model):
         self.veteran = league_item.get('veteran')
         self.fresh_blood = league_item.get('freshBlood')
         self.inactive = league_item.get('inactive')
+
 
 class ItemCode(db.Model):
     __tablename__ = 'item_code'
