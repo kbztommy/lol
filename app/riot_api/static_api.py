@@ -14,5 +14,5 @@ def get_all_champion_code():
     url = '{}/lol/static-data/v3/champions'.format(
         app.config['RIOT_URL'])
     r = requests.get(
-        url, params={'api_key': app.config['RIOT_API_KEY'], 'locale': app.config['APP_LOCALE'], 'dataById': 'true'})
+        url, params={'api_key': app.config['RIOT_API_KEY'], 'locale': app.config['APP_LOCALE'], 'dataById': 'false', 'tags': 'all'})
     return r.json()
