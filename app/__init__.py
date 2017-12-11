@@ -4,7 +4,8 @@ from config import config
 from flask_security import Security, SQLAlchemyUserDatastore
 from .extensions import db, security, bootstrap
 from .main import main as main_blueprint
-from .filters import time_format_filter,champion_id_filter,item_id_filter
+from .filters import time_format_filter, champion_id_filter, item_id_filter, item_img_filter
+
 
 def create_app(config_name):
     app = Flask(__name__)
@@ -23,5 +24,5 @@ def create_app(config_name):
     app.jinja_env.filters['timestamp_format'] = time_format_filter
     app.jinja_env.filters['champion_id_format'] = champion_id_filter
     app.jinja_env.filters['item_id_format'] = item_id_filter
-
+    app.jinja_env.filters['item_img_format'] = item_img_filter
     return app

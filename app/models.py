@@ -3,6 +3,7 @@ from flask_security import UserMixin, RoleMixin
 import time
 from sqlalchemy import ForeignKey, PrimaryKeyConstraint, ForeignKeyConstraint
 from sqlalchemy.orm import relationship
+from sqlalchemy.dialects.mysql import LONGTEXT
 # Define models
 roles_users = db.Table('roles_users',
                        db.Column('user_id', db.Integer(),
@@ -222,3 +223,11 @@ class ItemCode(db.Model):
         self.item_id = kwargs.get('id')
         self.name = kwargs.get('name')
         self.plaintext = kwargs.get('plaintext')
+
+
+class StaticData(db.Model):
+    __tablename__ = 'static_data'
+    version = db.Column(db.String(50), primary_key=True)
+    type = db.Column(db.String(50), primary_key=True)
+    locale = db.Column(db.String(50))
+    data = db.Column(db.CLOB)
