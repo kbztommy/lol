@@ -1,31 +1,35 @@
 import os
 from flask import current_app as app
 from json import dumps, loads
-from ..riot_api.static_api import get_all_item_code, get_champion_data
+from ..riot_api.static_api import get_all_item_data, get_champion_data, get_summoner_spell_data_data
 from ..models import StaticData
 from ..extensions import db
 
 
-def update_item_code():
-    item_data = get_all_item_code()
-
+def update_item_data():
+    item_data = get_all_item_data()
     write_static_data_file(item_data)
     insert_static_data(item_data)
 
 
-def update_champion_code():
+def update_champion_data():
     champions_data = get_champion_data()
+    write_static_data_file(champions_data)
+    insert_static_data(champions_data)
 
+
+def update_summoner_spell_data():
+    champions_data = get_summoner_spell_data_data()
     write_static_data_file(champions_data)
     insert_static_data(champions_data)
 
 
 def write_static_data_file(data):
     version = data.get('version')
-    type = data.get('type')
+    query_type = data.get('type')
     version_path = os.path.join(
         app.config['APP_STATIC_PATH'], version)
-    file_path = os.path.join(version_path, type + '.txt')
+    file_path = os.path.join(version_path, query_type + '.txt')
 
     if not os.path.exists(version_path):
         os.makedirs(version_path)

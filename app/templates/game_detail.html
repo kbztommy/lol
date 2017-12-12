@@ -17,9 +17,11 @@
                 <tr {% if game_detail.win %} class="success" {% else %} class="danger" {% endif %}>
                     <td>{{loop.index}}</td>
                     <td>{{game_detail.summoner_name}}</td>
-                    <td>{{game_detail.champion_id|champion_id_format}}</td>
-                    <td>{{game_detail.spell1_id}}</td>
-                    <td>{{game_detail.spell2_id}}</td>
+                    <td>
+                        <img src="{{game_detail.champion_id|champion_img_format}}" alt="{{game_detail.champion_id|champion_id_format}}">
+                    </td>
+                    <td><img src="{{game_detail.spell1_id|summoner_spell_img_format}}" alt="{{game_detail.spell1_id|summoner_spell_id_format}}"></td>
+                    <td><img src="{{game_detail.spell2_id|summoner_spell_img_format}}" alt="{{game_detail.spell2_id|summoner_spell_id_format}}"></td>
                     <td>{{game_detail.kills}}</td>
                     <td>{{game_detail.deaths}}</td>
                     <td>{{game_detail.assists}}</td>
@@ -46,7 +48,9 @@
                 <tr {% if game_detail.win %} class="success" {% else %} class="danger" {% endif %}>
                     <td>{{loop.index}}</td>
                     <td>{{game_detail.summoner_name}}</td>
-                    <td>{{game_detail.champion_id|champion_id_format}}</td>
+                    <td>
+                        <img src="{{game_detail.champion_id|champion_img_format}}" alt="{{game_detail.champion_id|champion_id_format}}">
+                    </td>
                     <td>{{game_detail.wardsKilled}}</td>
                     <td>{{game_detail.wardsPlaced}}</td>
                     <td>{{game_detail.sightWardsBoughtInGame}}</td>
@@ -77,7 +81,9 @@
                 <tr {% if game_detail.win %} class="success" {% else %} class="danger" {% endif %}>
                     <td>{{loop.index}}</td>
                     <td>{{game_detail.summoner_name}}</td>
-                    <td>{{game_detail.champion_id|champion_id_format}}</td>
+                    <td>
+                        <img src="{{game_detail.champion_id|champion_img_format}}" alt="{{game_detail.champion_id|champion_id_format}}">
+                    </td>
                     <td>
                         <img src="{{game_detail.item0|item_img_format}}" alt="{{game_detail.item0|item_id_format}}">
                     </td>

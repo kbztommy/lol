@@ -107,6 +107,13 @@ CREATE TABLE `league_item` (
   UNIQUE KEY `player_or_team_id_UNIQUE` (`player_or_team_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
+CREATE TABLE `static_data` (
+  `version` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
+  `type` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
+  `locale` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
+  `data` longtext COLLATE utf8_unicode_ci NOT NULL,
+  PRIMARY KEY (`version`,`type`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 

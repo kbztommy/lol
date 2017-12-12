@@ -86,7 +86,7 @@ def query_statistics_champion_use(account_id, lane=''):
     champions_code_map = get_champion_id_map()
     champions = list()
     for champion_id in champion_count_map:
-        champions.append(champions_code_map[champion_id])
+        champions.append(champions_code_map[str(champion_id)])
 
     counts = champion_count_map.values()
     fig1, ax1 = plt.subplots()
