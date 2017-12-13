@@ -6,7 +6,7 @@ from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 import matplotlib.pyplot as plt
 from ..models import GameMatch, Game, GameParticipant
 from ..riot_api.game_api import get_matches_by_account_id, get_game
-from ..extensions import db
+from ..extensions import db, scheduler
 from ..filters import get_champion_id_map
 
 
@@ -17,10 +17,13 @@ def query_game_match_list(account_id):
 
 
 def update_recent_game_detail():
-    game_id_list = __get_need_update_game_id_list()
-    for game_id in game_id_list:
-        current_app.logger.debug("%d had been update" % game_id)
-        __add_game(game_id)
+    app = scheduler.app
+    app.logger.debug('prepare update game detail')
+    with app.app_context():
+        game_id_list = __get_need_update_game_id_list()
+        for game_id in game_id_list:
+            app.logger.debug("%d had been update" % game_id)
+            __add_game(game_id)
 
 
 def add_recent_game_match(account_id):
@@ -73,7 +76,7 @@ def __add_game(game_id):
 
 def query_all_game_participant(game_id):
     game_participant_list = GameParticipant.query.filter_by(
-        game_id = game_id).order_by(GameParticipant.participant_id).all()
+        game_id=game_id).order_by(GameParticipant.participant_id).all()
     return game_participant_list
 
 
@@ -139,3 +142,4 @@ def __get_participant_map(participants):
     for participant in participants:
         participant_map[participant.get('participantId')] = participant
     return participant_map
+

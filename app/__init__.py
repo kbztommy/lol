@@ -2,7 +2,7 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from config import config
 from flask_security import Security, SQLAlchemyUserDatastore
-from .extensions import db, security, bootstrap
+from .extensions import db, security, bootstrap, scheduler
 from .main import main as main_blueprint
 from .filters import time_format_filter, champion_id_filter, item_id_filter, item_img_filter, champion_img_filter
 from .filters import summoner_spell_id_filter, summoner_spell_img_filter
@@ -18,9 +18,9 @@ def create_app(config_name):
     from .models import User, Role
     user_datastore = SQLAlchemyUserDatastore(db, User, Role)
     security.init_app(app, user_datastore)
-
+    scheduler.init_app(app)
     bootstrap.init_app(app)
-
+    scheduler.start()
     app.register_blueprint(main_blueprint)
     app.jinja_env.filters['timestamp_format'] = time_format_filter
     app.jinja_env.filters['champion_id_format'] = champion_id_filter

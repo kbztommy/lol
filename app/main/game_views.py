@@ -4,6 +4,7 @@ from . import main
 from ..service.game_service import query_game_match_list, update_recent_game_detail, add_recent_game_match
 from ..service.game_service import query_all_game_participant
 
+
 @main.route('/get_all_game_match/<account_id>', methods=['GET', 'POST'])
 @login_required
 def get_all_game_match(account_id):
