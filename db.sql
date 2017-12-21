@@ -28,15 +28,18 @@ CREATE TABLE `game_match` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 CREATE TABLE `game` (
-  `game_id` BIGINT(20) NOT NULL,
-  `game_version` VARCHAR(45) NOT NULL,
-  `platform_id` VARCHAR(45) NOT NULL,
-  `game_mode` VARCHAR(45) NOT NULL,
-  `map_id` INT NOT NULL,
-  `game_type` VARCHAR(45) NOT NULL,
-  `game_duration` BIGINT(20) NOT NULL,
-  `game_creation` BIGINT(20) NOT NULL,
-  PRIMARY KEY (`game_id`));
+  `game_id` bigint(20) NOT NULL,
+  `game_version` varchar(45) COLLATE utf8_unicode_ci NOT NULL,
+  `season_id` int(11) NOT NULL,
+  `platform_id` varchar(45) COLLATE utf8_unicode_ci NOT NULL,
+  `game_mode` varchar(45) COLLATE utf8_unicode_ci NOT NULL,
+  `map_id` int(11) NOT NULL,
+  `game_type` varchar(45) COLLATE utf8_unicode_ci NOT NULL,
+  `game_duration` bigint(20) NOT NULL,
+  `game_creation` bigint(20) NOT NULL,
+  PRIMARY KEY (`game_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
 
 CREATE TABLE `game_participant` (
   `game_id` bigint(20) NOT NULL,
@@ -46,28 +49,21 @@ CREATE TABLE `game_participant` (
   `team_id` int(11) NOT NULL,
   `win` tinyint(4) NOT NULL,
   `champion_id` int(11) NOT NULL,
+  `champ_level` int(11) NOT NULL DEFAULT '1',
+  `role` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `lane` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
   `spell1_id` int(11) DEFAULT NULL,
   `spell2_id` int(11) DEFAULT NULL,
   `kills` int(11) NOT NULL,
   `deaths` int(11) NOT NULL,
   `assists` int(11) NOT NULL,
-  `wardsKilled` int(11) NOT NULL,
-  `wardsPlaced` int(11) NOT NULL,
-  `sightWardsBoughtInGame` int(11) NOT NULL,
-  `visionScore` int(11) NOT NULL,
-  `timeCCingOthers` bigint(20) NOT NULL,
-  `item0` int(11) DEFAULT NULL,
-  `item1` int(11) DEFAULT NULL,
-  `item2` int(11) DEFAULT NULL,
-  `item3` int(11) DEFAULT NULL,
-  `item4` int(11) DEFAULT NULL,
-  `item5` int(11) DEFAULT NULL,
-  `item6` int(11) DEFAULT NULL,
   PRIMARY KEY (`game_id`,`account_id`),
   KEY `ID_GAME_ID` (`game_id`),
   KEY `ID_ACCOUNT_ID` (`account_id`),
-  CONSTRAINT `FK_GAME_ID` FOREIGN KEY (`game_id`) REFERENCES `game` (`game_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+  CONSTRAINT `FK_GAME_PARTICIPANT` FOREIGN KEY (`game_id`) REFERENCES `game` (`game_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+
 
 CREATE TABLE `champion_code` (
   `champion_id` int(11) NOT NULL,
@@ -115,5 +111,53 @@ CREATE TABLE `static_data` (
   PRIMARY KEY (`version`,`type`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
+CREATE TABLE `participant_perk` (
+  `game_id` bigint(20) NOT NULL,
+  `account_id` bigint(20) NOT NULL,
+  `perkPrimaryStyle` int(11) NOT NULL DEFAULT '0',
+  `perkSubStyle` int(11) NOT NULL DEFAULT '0',
+  `perk0` int(11) NOT NULL DEFAULT '0',
+  `perk1` int(11) NOT NULL DEFAULT '0',
+  `perk2` int(11) NOT NULL DEFAULT '0',
+  `perk3` int(11) NOT NULL DEFAULT '0',
+  `perk4` int(11) NOT NULL DEFAULT '0',
+  `perk5` int(11) NOT NULL DEFAULT '0',
+  `perk0Var1` int(11) NOT NULL DEFAULT '0',
+  `perk0Var2` int(11) NOT NULL DEFAULT '0',
+  `perk0Var3` int(11) NOT NULL DEFAULT '0',
+  `perk1Var1` int(11) NOT NULL DEFAULT '0',
+  `perk1Var2` int(11) NOT NULL DEFAULT '0',
+  `perk1Var3` int(11) NOT NULL DEFAULT '0',
+  `perk2Var1` int(11) NOT NULL DEFAULT '0',
+  `perk2Var2` int(11) NOT NULL DEFAULT '0',
+  `perk2Var3` int(11) NOT NULL DEFAULT '0',
+  `perk3Var1` int(11) NOT NULL DEFAULT '0',
+  `perk3Var2` int(11) NOT NULL DEFAULT '0',
+  `perk3Var3` int(11) NOT NULL DEFAULT '0',
+  `perk4Var1` int(11) NOT NULL DEFAULT '0',
+  `perk4Var2` int(11) NOT NULL DEFAULT '0',
+  `perk4Var3` int(11) NOT NULL DEFAULT '0',
+  `perk5Var1` int(11) NOT NULL DEFAULT '0',
+  `perk5Var2` int(11) NOT NULL DEFAULT '0',
+  `perk5Var3` int(11) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`game_id`,`account_id`),
+  CONSTRAINT `FK_PARTICIPANT_PERK` FOREIGN KEY (`game_id`, `account_id`) REFERENCES `game_participant` (`game_id`, `account_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+
+
+CREATE TABLE `participant_item` (
+  `game_id` bigint(20) NOT NULL,
+  `account_id` bigint(20) NOT NULL,
+  `item0` int(11) NOT NULL DEFAULT '0',
+  `item1` int(11) NOT NULL DEFAULT '0',
+  `item2` int(11) NOT NULL DEFAULT '0',
+  `item3` int(11) NOT NULL DEFAULT '0',
+  `item4` int(11) NOT NULL DEFAULT '0',
+  `item5` int(11) NOT NULL DEFAULT '0',
+  `item6` int(11) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`game_id`,`account_id`),
+  CONSTRAINT `FK_PARTICIPANT_ITEM` FOREIGN KEY (`game_id`, `account_id`) REFERENCES `game_participant` (`game_id`, `account_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
