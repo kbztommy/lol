@@ -1,30 +1,9 @@
-CREATE TABLE `summoner` (
-  `id` bigint(20) NOT NULL,
-  `account_id` bigint(20) NOT NULL,
-  `name` varchar(45) COLLATE utf8_unicode_ci NOT NULL,
-  `profile_icon_id` int(11) NOT NULL,
-  `summoner_level` bigint(20) NOT NULL,
-  `revision_date` bigint(20) NOT NULL,
-  `update_date` bigint(20) NOT NULL,
-  PRIMARY KEY (`id`,`account_id`),
-  UNIQUE KEY `id_UNIQUE` (`id`),
-  UNIQUE KEY `accountId_UNIQUE` (`account_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
-
-
-
-CREATE TABLE `game_match` (
-  `account_id` bigint(20) NOT NULL,
-  `game_id` bigint(20) NOT NULL,
-  `champion` int(11) NOT NULL,
-  `lane` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
-  `platform_id` varchar(10) COLLATE utf8_unicode_ci NOT NULL,
-  `season` int(11) NOT NULL,
-  `queue` int(11) NOT NULL,
-  `role` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `match_timestamp` bigint(20) NOT NULL,
-  PRIMARY KEY (`account_id`,`game_id`)
+CREATE TABLE `champion_code` (
+  `champion_id` int(11) NOT NULL,
+  `title` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
+  `key` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
+  `name` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
+  PRIMARY KEY (`champion_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 CREATE TABLE `game` (
@@ -40,6 +19,19 @@ CREATE TABLE `game` (
   PRIMARY KEY (`game_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
+CREATE TABLE `game_match` (
+  `account_id` bigint(20) NOT NULL,
+  `game_id` bigint(20) NOT NULL,
+  `champion` int(11) NOT NULL,
+  `lane` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
+  `platform_id` varchar(10) COLLATE utf8_unicode_ci NOT NULL,
+  `season` int(11) NOT NULL,
+  `queue` int(11) NOT NULL,
+  `role` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `match_timestamp` bigint(20) NOT NULL,
+  PRIMARY KEY (`account_id`,`game_id`),
+  KEY `FK_GAME_ID_idx` (`game_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 CREATE TABLE `game_participant` (
   `game_id` bigint(20) NOT NULL,
@@ -63,16 +55,6 @@ CREATE TABLE `game_participant` (
   CONSTRAINT `FK_GAME_PARTICIPANT` FOREIGN KEY (`game_id`) REFERENCES `game` (`game_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-
-
-CREATE TABLE `champion_code` (
-  `champion_id` int(11) NOT NULL,
-  `title` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
-  `key` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
-  `name` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
-  PRIMARY KEY (`champion_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
 CREATE TABLE `item_code` (
   `item_id` int(11) NOT NULL,
   `name` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
@@ -81,11 +63,12 @@ CREATE TABLE `item_code` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 CREATE TABLE `league` (
-  `league_id` VARCHAR(100) NOT NULL,
-  `tier` VARCHAR(50) NOT NULL,
-  `queue` VARCHAR(50) NOT NULL,
-  `name` VARCHAR(50) NOT NULL,
-  PRIMARY KEY (`league_id`));
+  `league_id` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
+  `tier` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
+  `queue` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
+  `name` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
+  PRIMARY KEY (`league_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 CREATE TABLE `league_item` (
   `league_id` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
@@ -103,12 +86,18 @@ CREATE TABLE `league_item` (
   UNIQUE KEY `player_or_team_id_UNIQUE` (`player_or_team_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-CREATE TABLE `static_data` (
-  `version` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
-  `type` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
-  `locale` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
-  `data` longtext COLLATE utf8_unicode_ci NOT NULL,
-  PRIMARY KEY (`version`,`type`)
+CREATE TABLE `participant_item` (
+  `game_id` bigint(20) NOT NULL,
+  `account_id` bigint(20) NOT NULL,
+  `item0` int(11) NOT NULL DEFAULT '0',
+  `item1` int(11) NOT NULL DEFAULT '0',
+  `item2` int(11) NOT NULL DEFAULT '0',
+  `item3` int(11) NOT NULL DEFAULT '0',
+  `item4` int(11) NOT NULL DEFAULT '0',
+  `item5` int(11) NOT NULL DEFAULT '0',
+  `item6` int(11) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`game_id`,`account_id`),
+  CONSTRAINT `FK_PARTICIPANT_ITEM` FOREIGN KEY (`game_id`, `account_id`) REFERENCES `game_participant` (`game_id`, `account_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 CREATE TABLE `participant_perk` (
@@ -144,23 +133,7 @@ CREATE TABLE `participant_perk` (
   CONSTRAINT `FK_PARTICIPANT_PERK` FOREIGN KEY (`game_id`, `account_id`) REFERENCES `game_participant` (`game_id`, `account_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-
-
-CREATE TABLE `participant_item` (
-  `game_id` bigint(20) NOT NULL,
-  `account_id` bigint(20) NOT NULL,
-  `item0` int(11) NOT NULL DEFAULT '0',
-  `item1` int(11) NOT NULL DEFAULT '0',
-  `item2` int(11) NOT NULL DEFAULT '0',
-  `item3` int(11) NOT NULL DEFAULT '0',
-  `item4` int(11) NOT NULL DEFAULT '0',
-  `item5` int(11) NOT NULL DEFAULT '0',
-  `item6` int(11) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`game_id`,`account_id`),
-  CONSTRAINT `FK_PARTICIPANT_ITEM` FOREIGN KEY (`game_id`, `account_id`) REFERENCES `game_participant` (`game_id`, `account_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
-CREATE TABLE `game_statistics` (
+CREATE TABLE `participant_statistics` (
   `game_id` bigint(20) NOT NULL,
   `account_id` bigint(20) NOT NULL,
   `neutralMinionsKilledTeamJungle` int(11) DEFAULT NULL,
@@ -213,3 +186,50 @@ CREATE TABLE `game_statistics` (
   CONSTRAINT `FK_PARTICIPANT_STATIS` FOREIGN KEY (`game_id`, `account_id`) REFERENCES `game_participant` (`game_id`, `account_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
+CREATE TABLE `role` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(80) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `description` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `name` (`name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+CREATE TABLE `roles_users` (
+  `user_id` int(11) DEFAULT NULL,
+  `role_id` int(11) DEFAULT NULL,
+  KEY `user_id` (`user_id`),
+  KEY `role_id` (`role_id`),
+  CONSTRAINT `roles_users_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`),
+  CONSTRAINT `roles_users_ibfk_2` FOREIGN KEY (`role_id`) REFERENCES `role` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+CREATE TABLE `static_data` (
+  `version` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
+  `type` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
+  `locale` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
+  `data` longtext COLLATE utf8_unicode_ci NOT NULL,
+  PRIMARY KEY (`version`,`type`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+CREATE TABLE `summoner` (
+  `id` bigint(20) NOT NULL,
+  `account_id` bigint(20) NOT NULL,
+  `name` varchar(45) COLLATE utf8_unicode_ci NOT NULL,
+  `profile_icon_id` int(11) NOT NULL,
+  `summoner_level` bigint(20) NOT NULL,
+  `revision_date` bigint(20) NOT NULL,
+  `update_date` bigint(20) NOT NULL,
+  PRIMARY KEY (`id`,`account_id`),
+  UNIQUE KEY `id_UNIQUE` (`id`),
+  UNIQUE KEY `accountId_UNIQUE` (`account_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+CREATE TABLE `user` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `email` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `password` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `active` tinyint(1) DEFAULT NULL,
+  `confirmed_at` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `email` (`email`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
