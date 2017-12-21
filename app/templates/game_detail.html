@@ -51,11 +51,11 @@
                     <td>
                         <img src="{{game_detail.champion_id|champion_img_format}}" alt="{{game_detail.champion_id|champion_id_format}}">
                     </td>
-                    <td>{{game_detail.wardsKilled}}</td>
-                    <td>{{game_detail.wardsPlaced}}</td>
-                    <td>{{game_detail.sightWardsBoughtInGame}}</td>
-                    <td>{{game_detail.visionScore}}</td>
-                    <td>{{game_detail.timeCCingOthers}}</td>
+                    <td>{{game_detail.statistics.wardsKilled}}</td>
+                    <td>{{game_detail.statistics.wardsPlaced}}</td>
+                    <td>{{game_detail.statistics.sightWardsBoughtInGame}}</td>
+                    <td>{{game_detail.statistics.visionScore}}</td>
+                    <td>{{game_detail.statistics.timeCCingOthers}}</td>
                 </tr>
                 {% endfor %}
             </tbody>

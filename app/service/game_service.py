@@ -4,7 +4,7 @@ from io import BytesIO
 from flask import current_app
 from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 import matplotlib.pyplot as plt
-from ..models import GameMatch, Game, GameParticipant,ParticipantItem,ParticipantPerk
+from ..models import GameMatch, Game, GameParticipant, ParticipantItem, ParticipantPerk, ParticipantStatistics
 from ..riot_api.game_api import get_matches_by_account_id, get_game
 from ..extensions import db, scheduler
 from ..filters import get_champion_id_map
@@ -125,10 +125,12 @@ def __get_participant_list(game_id, participant_identity_map, participant_map):
     for participant_id, participant_identity in participant_identity_map.items():
         account_id = participant_identity.get('player').get('accountId')
         stats = participant_map.get(participant_id).get('stats')
-        participant_item = ParticipantItem(game_id,account_id,stats)
-        participant_perk = ParticipantPerk(game_id,account_id,stats)
+        participant_item = ParticipantItem(game_id, account_id, stats)
+        participant_perk = ParticipantPerk(game_id, account_id, stats)
+        participant_perk_statistics = ParticipantStatistics(
+            game_id, account_id, stats)
         game_participant_do = GameParticipant(game_id,
-                                              participant_identity, participant_map.get(participant_id),participant_item,participant_perk)
+                                              participant_identity, participant_map.get(participant_id), participant_item, participant_perk, participant_perk_statistics)
         game_participant_do_list.append(game_participant_do)
     return game_participant_do_list
 
@@ -146,4 +148,3 @@ def __get_participant_map(participants):
     for participant in participants:
         participant_map[participant.get('participantId')] = participant
     return participant_map
-

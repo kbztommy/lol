@@ -224,14 +224,10 @@ class GameParticipant(db.Model):
     kills = db.Column(db.INTEGER)
     deaths = db.Column(db.INTEGER)
     assists = db.Column(db.INTEGER)
-    # wardsKilled = db.Column(db.INTEGER)
-    # wardsPlaced = db.Column(db.INTEGER)
-    # sightWardsBoughtInGame = db.Column(db.INTEGER)
-    # visionScore = db.Column(db.INTEGER)
-    # timeCCingOthers = db.Column(db.BigInteger)
     game = relationship("Game", uselist=False)
     item = relationship("ParticipantItem", uselist=False)
     perk = relationship("ParticipantPerk", uselist=False)
+    statistics = relationship("ParticipantStatistics", uselist=False)
 
     __table_args__ = (
         PrimaryKeyConstraint('game_id', 'account_id'),
@@ -240,7 +236,7 @@ class GameParticipant(db.Model):
         ),
     )
 
-    def __init__(self, game_id, participant_identity, participant, item, perk):
+    def __init__(self, game_id, participant_identity, participant, item, perk, statistics):
         stats = participant.get('stats')
         timeline = participant.get('timeline')
         self.game_id = game_id
@@ -259,13 +255,9 @@ class GameParticipant(db.Model):
         self.kills = stats.get('kills')
         self.deaths = stats.get('deaths')
         self.assists = stats.get('assists')
-        # self.wardsKilled = stats.get('wardsKilled')
-        # self.wardsPlaced = stats.get('wardsPlaced')
-        # self.sightWardsBoughtInGame = stats.get('sightWardsBoughtInGame')
-        # self.visionScore = stats.get('visionScore')
-        # self.timeCCingOthers = stats.get('timeCCingOthers')
         self.item = item
         self.perk = perk
+        self.statistics = statistics
 
 
 class League(db.Model):
@@ -328,3 +320,118 @@ class StaticData(db.Model):
     type = db.Column(db.String(50), primary_key=True)
     locale = db.Column(db.String(50))
     data = db.Column(db.CLOB)
+
+
+class ParticipantStatistics(db.Model):
+    __tablename__ = 'participant_statistics'
+    __table_args__ = (
+        PrimaryKeyConstraint('game_id', 'account_id'), ForeignKeyConstraint(
+            ['game_id', 'account_id'],
+            ['game_participant.game_id', 'game_participant.account_id']
+        ),
+    )
+    game_id = db.Column(db.BigInteger)
+    account_id = db.Column(db.BigInteger)
+    neutralMinionsKilledTeamJungle = db.Column(db.INTEGER)
+    visionScore = db.Column(db.INTEGER)
+    magicDamageDealtToChampions = db.Column(db.INTEGER)
+    largestMultiKill = db.Column(db.INTEGER)
+    totalTimeCrowdControlDealt = db.Column(db.INTEGER)
+    longestTimeSpentLiving = db.Column(db.INTEGER)
+    tripleKills = db.Column(db.INTEGER)
+    neutralMinionsKilled = db.Column(db.INTEGER)
+    damageDealtToTurrets = db.Column(db.INTEGER)
+    physicalDamageDealtToChampions = db.Column(db.INTEGER)
+    damageDealtToObjectives = db.Column(db.INTEGER)
+    totalUnitsHealed = db.Column(db.INTEGER)
+    totalDamageTaken = db.Column(db.INTEGER)
+    wardsKilled = db.Column(db.INTEGER)
+    largestCriticalStrike = db.Column(db.INTEGER)
+    largestKillingSpree = db.Column(db.INTEGER)
+    quadraKills = db.Column(db.INTEGER)
+    magicDamageDealt = db.Column(db.INTEGER)
+    firstBloodAssist = db.Column(db.Boolean)
+    damageSelfMitigated = db.Column(db.INTEGER)
+    magicalDamageTaken = db.Column(db.INTEGER)
+    trueDamageTaken = db.Column(db.INTEGER)
+    goldSpent = db.Column(db.INTEGER)
+    trueDamageDealt = db.Column(db.INTEGER)
+    physicalDamageDealt = db.Column(db.INTEGER)
+    sightWardsBoughtInGame = db.Column(db.INTEGER)
+    totalDamageDealtToChampions = db.Column(db.INTEGER)
+    physicalDamageTaken = db.Column(db.INTEGER)
+    totalDamageDealt = db.Column(db.INTEGER)
+    neutralMinionsKilledEnemyJungle = db.Column(db.INTEGER)
+    wardsPlaced = db.Column(db.INTEGER)
+    turretKills = db.Column(db.INTEGER)
+    firstBloodKill = db.Column(db.Boolean)
+    trueDamageDealtToChampions = db.Column(db.INTEGER)
+    goldEarned = db.Column(db.INTEGER)
+    killingSprees = db.Column(db.INTEGER)
+    unrealKills = db.Column(db.INTEGER)
+    firstTowerAssist = db.Column(db.Boolean)
+    firstTowerKill = db.Column(db.Boolean)
+    doubleKills = db.Column(db.INTEGER)
+    inhibitorKills = db.Column(db.INTEGER)
+    visionWardsBoughtInGame = db.Column(db.INTEGER)
+    totalHeal = db.Column(db.INTEGER)
+    pentaKills = db.Column(db.INTEGER)
+    totalMinionsKilled = db.Column(db.INTEGER)
+    timeCCingOthers = db.Column(db.INTEGER)
+
+    def __init__(self, game_id, accountId, stats):
+        self.game_id = stats.get('game_id')
+        self.account_id = stats.get('account_id')
+        self.neutralMinionsKilledTeamJungle = stats.get(
+            'neutralMinionsKilledTeamJungle')
+        self.visionScore = stats.get('visionScore')
+        self.magicDamageDealtToChampions = stats.get(
+            'magicDamageDealtToChampions')
+        self.largestMultiKill = stats.get('largestMultiKill')
+        self.totalTimeCrowdControlDealt = stats.get(
+            'totalTimeCrowdControlDealt')
+        self.longestTimeSpentLiving = stats.get('longestTimeSpentLiving')
+        self.tripleKills = stats.get('tripleKills')
+        self.neutralMinionsKilled = stats.get('neutralMinionsKilled')
+        self.damageDealtToTurrets = stats.get('damageDealtToTurrets')
+        self.physicalDamageDealtToChampions = stats.get(
+            'physicalDamageDealtToChampions')
+        self.damageDealtToObjectives = stats.get('damageDealtToObjectives')
+        self.totalUnitsHealed = stats.get('totalUnitsHealed')
+        self.totalDamageTaken = stats.get('totalDamageTaken')
+        self.wardsKilled = stats.get('wardsKilled')
+        self.largestCriticalStrike = stats.get('largestCriticalStrike')
+        self.largestKillingSpree = stats.get('largestKillingSpree')
+        self.quadraKills = stats.get('quadraKills')
+        self.magicDamageDealt = stats.get('magicDamageDealt')
+        self.firstBloodAssist = stats.get('firstBloodAssist')
+        self.damageSelfMitigated = stats.get('damageSelfMitigated')
+        self.magicalDamageTaken = stats.get('magicalDamageTaken')
+        self.trueDamageTaken = stats.get('trueDamageTaken')
+        self.goldSpent = stats.get('goldSpent')
+        self.trueDamageDealt = stats.get('trueDamageDealt')
+        self.physicalDamageDealt = stats.get('physicalDamageDealt')
+        self.sightWardsBoughtInGame = stats.get('sightWardsBoughtInGame')
+        self.totalDamageDealtToChampions = stats.get(
+            'totalDamageDealtToChampions')
+        self.physicalDamageTaken = stats.get('physicalDamageTaken')
+        self.totalDamageDealt = stats.get('totalDamageDealt')
+        self.neutralMinionsKilledEnemyJungle = stats.get(
+            'neutralMinionsKilledEnemyJungle')
+        self.wardsPlaced = stats.get('wardsPlaced')
+        self.turretKills = stats.get('turretKills')
+        self.firstBloodKill = stats.get('firstBloodKill')
+        self.trueDamageDealtToChampions = stats.get(
+            'trueDamageDealtToChampions')
+        self.goldEarned = stats.get('goldEarned')
+        self.killingSprees = stats.get('killingSprees')
+        self.unrealKills = stats.get('unrealKills')
+        self.firstTowerAssist = stats.get('firstTowerAssist')
+        self.firstTowerKill = stats.get('firstTowerKill')
+        self.doubleKills = stats.get('doubleKills')
+        self.inhibitorKills = stats.get('inhibitorKills')
+        self.visionWardsBoughtInGame = stats.get('visionWardsBoughtInGame')
+        self.totalHeal = stats.get('totalHeal')
+        self.pentaKills = stats.get('pentaKills')
+        self.totalMinionsKilled = stats.get('totalMinionsKilled')
+        self.timeCCingOthers = stats.get('timeCCingOthers')
