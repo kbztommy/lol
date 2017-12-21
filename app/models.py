@@ -96,7 +96,6 @@ class Game(db.Model):
     game_type = db.Column(db.String(45))
     game_duration = db.Column(db.BigInteger)
     game_creation = db.Column(db.BigInteger)
-   
 
     def __init__(self, **kwargs):
         self.game_id = kwargs.get('gameId')
@@ -150,6 +149,8 @@ class ParticipantPerk(db.Model):
     )
     game_id = db.Column(db.BigInteger)
     account_id = db.Column(db.BigInteger)
+    perkPrimaryStyle = db.Column(db.INTEGER)
+    perkSubStyle = db.Column(db.INTEGER)
     perk0 = db.Column(db.INTEGER)
     perk1 = db.Column(db.INTEGER)
     perk2 = db.Column(db.INTEGER)
@@ -178,6 +179,8 @@ class ParticipantPerk(db.Model):
     def __init__(self, game_id, accountId, stats):
         self.game_id = game_id
         self.account_id = accountId
+        self.perkPrimaryStyle = stats.get('perkPrimaryStyle')
+        self.perkSubStyle = stats.get('perkSubStyle')
         self.perk0 = stats.get('perk0')
         self.perk1 = stats.get('perk1')
         self.perk2 = stats.get('perk2')
@@ -203,6 +206,7 @@ class ParticipantPerk(db.Model):
         self.perk5Var2 = stats.get('perk5Var2')
         self.perk5Var3 = stats.get('perk5Var3')
 
+
 class GameParticipant(db.Model):
     __tablename__ = 'game_participant'
     game_id = db.Column(db.BigInteger)
@@ -225,14 +229,14 @@ class GameParticipant(db.Model):
     # sightWardsBoughtInGame = db.Column(db.INTEGER)
     # visionScore = db.Column(db.INTEGER)
     # timeCCingOthers = db.Column(db.BigInteger)
-    game = relationship("Game",uselist=False)
+    game = relationship("Game", uselist=False)
     item = relationship("ParticipantItem", uselist=False)
     perk = relationship("ParticipantPerk", uselist=False)
 
     __table_args__ = (
         PrimaryKeyConstraint('game_id', 'account_id'),
         ForeignKeyConstraint(
-            ['game_id'],['game.game_id']
+            ['game_id'], ['game.game_id']
         ),
     )
 
@@ -262,6 +266,7 @@ class GameParticipant(db.Model):
         # self.timeCCingOthers = stats.get('timeCCingOthers')
         self.item = item
         self.perk = perk
+
 
 class League(db.Model):
     __tablename__ = 'league'
