@@ -107,6 +107,101 @@ class Game(db.Model):
         self.game_creation = kwargs.get('gameCreation')
 
 
+class ParticipantItem(db.Model):
+    __tablename__ = 'participant_item'
+    __table_args__ = (
+        PrimaryKeyConstraint('game_id', 'account_id'), ForeignKeyConstraint(
+            ['game_id', 'account_id'],
+            ['game_participant.game_id', 'game_participant.account_id']
+        ),
+    )
+    game_id = db.Column(db.BigInteger)
+    account_id = db.Column(db.BigInteger)
+    item0 = db.Column(db.INTEGER)
+    item1 = db.Column(db.INTEGER)
+    item2 = db.Column(db.INTEGER)
+    item3 = db.Column(db.INTEGER)
+    item4 = db.Column(db.INTEGER)
+    item5 = db.Column(db.INTEGER)
+    item6 = db.Column(db.INTEGER)
+
+    def __init__(self, game_id, accountId, stats):
+        self.game_id = game_id
+        self.account_id = accountId
+        self.item0 = stats.get('item0')
+        self.item1 = stats.get('item1')
+        self.item2 = stats.get('item2')
+        self.item3 = stats.get('item3')
+        self.item4 = stats.get('item4')
+        self.item5 = stats.get('item5')
+        self.item6 = stats.get('item6')
+
+
+class ParticipantPerk(db.Model):
+    __tablename__ = 'participant_perk'
+    __table_args__ = (
+        PrimaryKeyConstraint('game_id', 'account_id'), ForeignKeyConstraint(
+            ['game_id', 'account_id'],
+            ['game_participant.game_id', 'game_participant.account_id']
+        ),
+    )
+    game_id = db.Column(db.BigInteger)
+    account_id = db.Column(db.BigInteger)
+    perk0 = db.Column(db.INTEGER)
+    perk1 = db.Column(db.INTEGER)
+    perk2 = db.Column(db.INTEGER)
+    perk3 = db.Column(db.INTEGER)
+    perk4 = db.Column(db.INTEGER)
+    perk5 = db.Column(db.INTEGER)
+    perk0Var1 = db.Column(db.INTEGER)
+    perk0Var2 = db.Column(db.INTEGER)
+    perk0Var3 = db.Column(db.INTEGER)
+    perk1Var1 = db.Column(db.INTEGER)
+    perk1Var2 = db.Column(db.INTEGER)
+    perk1Var3 = db.Column(db.INTEGER)
+    perk2Var1 = db.Column(db.INTEGER)
+    perk2Var2 = db.Column(db.INTEGER)
+    perk2Var3 = db.Column(db.INTEGER)
+    perk3Var1 = db.Column(db.INTEGER)
+    perk3Var2 = db.Column(db.INTEGER)
+    perk3Var3 = db.Column(db.INTEGER)
+    perk4Var1 = db.Column(db.INTEGER)
+    perk4Var2 = db.Column(db.INTEGER)
+    perk4Var3 = db.Column(db.INTEGER)
+    perk5Var1 = db.Column(db.INTEGER)
+    perk5Var2 = db.Column(db.INTEGER)
+    perk5Var3 = db.Column(db.INTEGER)
+
+    def __init__(self, game_id, accountId, stats):
+        self.game_id = game_id
+        self.account_id = accountId
+        self.perk0 = stats.get('perk0')
+        self.perk1 = stats.get('perk1')
+        self.perk2 = stats.get('perk2')
+        self.perk3 = stats.get('perk3')
+        self.perk4 = stats.get('perk4')
+        self.perk5 = stats.get('perk5')
+        self.perk0Var1 = stats.get('perk0Var1')
+        self.perk0Var2 = stats.get('perk0Var2')
+        self.perk0Var3 = stats.get('perk0Var3')
+        self.perk1Var1 = stats.get('perk1Var1')
+        self.perk1Var2 = stats.get('perk1Var2')
+        self.perk1Var3 = stats.get('perk1Var3')
+        self.perk2Var1 = stats.get('perk2Var1')
+        self.perk2Var2 = stats.get('perk2Var2')
+        self.perk2Var3 = stats.get('perk2Var3')
+        self.perk3Var1 = stats.get('perk3Var1')
+        self.perk3Var2 = stats.get('perk3Var2')
+        self.perk3Var3 = stats.get('perk3Var3')
+        self.perk4Var1 = stats.get('perk4Var1')
+        self.perk4Var2 = stats.get('perk4Var2')
+        self.perk4Var3 = stats.get('perk4Var3')
+        self.perk5Var1 = stats.get('perk5Var1')
+        self.perk5Var2 = stats.get('perk5Var2')
+        self.perk5Var3 = stats.get('perk5Var3')
+    
+
+
 class GameParticipant(db.Model):
     __tablename__ = 'game_participant'
     game_id = db.Column(db.BigInteger)
@@ -116,6 +211,8 @@ class GameParticipant(db.Model):
     team_id = db.Column(db.INTEGER)
     win = db.Column(db.Boolean)
     champion_id = db.Column(db.INTEGER)
+    lane = db.Column(db.String)
+    role = db.Column(db.String)
     spell1_id = db.Column(db.INTEGER)
     spell2_id = db.Column(db.INTEGER)
     kills = db.Column(db.INTEGER)
@@ -125,25 +222,24 @@ class GameParticipant(db.Model):
     wardsPlaced = db.Column(db.INTEGER)
     sightWardsBoughtInGame = db.Column(db.INTEGER)
     visionScore = db.Column(db.INTEGER)
+
     timeCCingOthers = db.Column(db.BigInteger)
-    item0 = db.Column(db.INTEGER)
-    item1 = db.Column(db.INTEGER)
-    item2 = db.Column(db.INTEGER)
-    item3 = db.Column(db.INTEGER)
-    item4 = db.Column(db.INTEGER)
-    item5 = db.Column(db.INTEGER)
-    item6 = db.Column(db.INTEGER)
-    game_match = relationship("GameMatch")
+
+
+    game_match = relationship("Game")
+    item = relationship("ParticipantItem", uselist=False)
+    perk = relationship("ParticipantPerk", uselist=False)
 
     __table_args__ = (
         PrimaryKeyConstraint('game_id', 'account_id'), ForeignKeyConstraint(
-            ['game_id', 'account_id'],
-            ['game_match.game_id', 'game_match.account_id']
-        ),
+            ['game_id'],
+            ['game.game_id']
+        )
     )
 
-    def __init__(self, game_id, participant_identity, participant):
+    def __init__(self, game_id, participant_identity, participant, item, perk):
         stats = participant.get('stats')
+        timeline = participant.get('timeline')
         self.game_id = game_id
         self.account_id = participant_identity.get('player').get('accountId')
         self.summoner_name = participant_identity.get(
@@ -152,24 +248,20 @@ class GameParticipant(db.Model):
         self.team_id = participant.get('teamId')
         self.win = stats.get('win')
         self.champion_id = participant.get('championId')
+        self.lane = timeline.get('lane')
+        self.role = timeline.get('role')
         self.spell1_id = participant.get('spell1Id')
         self.spell2_id = participant.get('spell2Id')
         self.kills = stats.get('kills')
         self.deaths = stats.get('deaths')
         self.assists = stats.get('assists')
-        self.wardsKilled = stats.get('wardsKilled', 0)
-        self.wardsPlaced = stats.get('wardsPlaced', 0)
+        self.wardsKilled = stats.get('wardsKilled')
+        self.wardsPlaced = stats.get('wardsPlaced')
         self.sightWardsBoughtInGame = stats.get('sightWardsBoughtInGame')
         self.visionScore = stats.get('visionScore')
         self.timeCCingOthers = stats.get('timeCCingOthers')
-        self.item0 = stats.get('item0')
-        self.item1 = stats.get('item1')
-        self.item2 = stats.get('item2')
-        self.item3 = stats.get('item3')
-        self.item4 = stats.get('item4')
-        self.item5 = stats.get('item5')
-        self.item6 = stats.get('item6')
-
+        self.item = item
+        self.perk = perk
 
 class League(db.Model):
     __tablename__ = 'league'
