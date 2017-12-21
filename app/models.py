@@ -89,16 +89,19 @@ class Game(db.Model):
     __tablename__ = 'game'
     game_id = db.Column(db.BigInteger, primary_key=True)
     game_version = db.Column(db.String(45))
+    season_id = db.Column(db.INTEGER)
     platform_id = db.Column(db.String(45))
     game_mode = db.Column(db.String(45))
     map_id = db.Column(db.INTEGER)
     game_type = db.Column(db.String(45))
     game_duration = db.Column(db.BigInteger)
     game_creation = db.Column(db.BigInteger)
+   
 
     def __init__(self, **kwargs):
         self.game_id = kwargs.get('gameId')
         self.game_version = kwargs.get('gameVersion')
+        self.season_id = kwargs.get('seasonId')
         self.platform_id = kwargs.get('platformId')
         self.game_mode = kwargs.get('gameMode')
         self.map_id = kwargs.get('mapId')
@@ -199,8 +202,6 @@ class ParticipantPerk(db.Model):
         self.perk5Var1 = stats.get('perk5Var1')
         self.perk5Var2 = stats.get('perk5Var2')
         self.perk5Var3 = stats.get('perk5Var3')
-    
-
 
 class GameParticipant(db.Model):
     __tablename__ = 'game_participant'
@@ -218,23 +219,20 @@ class GameParticipant(db.Model):
     kills = db.Column(db.INTEGER)
     deaths = db.Column(db.INTEGER)
     assists = db.Column(db.INTEGER)
-    wardsKilled = db.Column(db.INTEGER)
-    wardsPlaced = db.Column(db.INTEGER)
-    sightWardsBoughtInGame = db.Column(db.INTEGER)
-    visionScore = db.Column(db.INTEGER)
-
-    timeCCingOthers = db.Column(db.BigInteger)
-
-
-    game_match = relationship("Game")
+    # wardsKilled = db.Column(db.INTEGER)
+    # wardsPlaced = db.Column(db.INTEGER)
+    # sightWardsBoughtInGame = db.Column(db.INTEGER)
+    # visionScore = db.Column(db.INTEGER)
+    # timeCCingOthers = db.Column(db.BigInteger)
+    game = relationship("Game",uselist=False)
     item = relationship("ParticipantItem", uselist=False)
     perk = relationship("ParticipantPerk", uselist=False)
 
     __table_args__ = (
-        PrimaryKeyConstraint('game_id', 'account_id'), ForeignKeyConstraint(
-            ['game_id'],
-            ['game.game_id']
-        )
+        PrimaryKeyConstraint('game_id', 'account_id'),
+        ForeignKeyConstraint(
+            ['game_id'],['game.game_id']
+        ),
     )
 
     def __init__(self, game_id, participant_identity, participant, item, perk):
@@ -255,11 +253,11 @@ class GameParticipant(db.Model):
         self.kills = stats.get('kills')
         self.deaths = stats.get('deaths')
         self.assists = stats.get('assists')
-        self.wardsKilled = stats.get('wardsKilled')
-        self.wardsPlaced = stats.get('wardsPlaced')
-        self.sightWardsBoughtInGame = stats.get('sightWardsBoughtInGame')
-        self.visionScore = stats.get('visionScore')
-        self.timeCCingOthers = stats.get('timeCCingOthers')
+        # self.wardsKilled = stats.get('wardsKilled')
+        # self.wardsPlaced = stats.get('wardsPlaced')
+        # self.sightWardsBoughtInGame = stats.get('sightWardsBoughtInGame')
+        # self.visionScore = stats.get('visionScore')
+        # self.timeCCingOthers = stats.get('timeCCingOthers')
         self.item = item
         self.perk = perk
 

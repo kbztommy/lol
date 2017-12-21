@@ -108,11 +108,11 @@ def __query_recent_champion_count_map(account_id, start_time, end_time, lane='')
     game_participant_do_list = list()
 
     if not lane:
-        game_participant_do_list = db.session.query(GameParticipant).join(GameMatch).filter(GameMatch.match_timestamp >= start_time).filter(
-            GameMatch.match_timestamp <= end_time).filter(GameParticipant.account_id == account_id)
+        game_participant_do_list = db.session.query(GameParticipant).join(Game).filter(Game.game_creation >= start_time).filter(
+            Game.game_creation <= end_time).filter(GameParticipant.account_id == account_id)
     else:
-        game_participant_do_list = db.session.query(GameParticipant).join(GameMatch).filter(GameMatch.match_timestamp >= start_time).filter(
-            GameMatch.match_timestamp <= end_time).filter(GameParticipant.account_id == account_id).filter(GameMatch.lane == lane)
+        game_participant_do_list = db.session.query(GameParticipant).join(Game).filter(Game.game_creation >= start_time).filter(
+            Game.game_creation <= end_time).filter(GameParticipant.account_id == account_id).filter(GameParticipant.lane == lane)
     for game_participant_do in game_participant_do_list:
         champion_count_map[game_participant_do.champion_id] = champion_count_map.get(
             game_participant_do.champion_id, 0) + 1
