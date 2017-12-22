@@ -435,3 +435,54 @@ class ParticipantStatistics(db.Model):
         self.pentaKills = stats.get('pentaKills')
         self.totalMinionsKilled = stats.get('totalMinionsKilled')
         self.timeCCingOthers = stats.get('timeCCingOthers')
+
+
+class GameTeam(db.Model):
+    game_id = db.Column(db.BigInteger,primary_key=True)
+    teamId = db.Column(db.Integer,primary_key=True)
+    firstDragon = db.Column(db.Boolean)
+    firstInhibitor = db.Column(db.Boolean)
+    win = db.Column(db.String(50))
+    firstRiftHerald = db.Column(db.Boolean)
+    firstBaron = db.Column(db.Boolean)
+    baronKills = db.Column(db.Integer)
+    riftHeraldKills = db.Column(db.Integer)
+    firstBlood = db.Column(db.Boolean)
+    firstTower = db.Column(db.Integer)
+    vilemawKills = db.Column(db.Integer)
+    inhibitorKills = db.Column(db.Integer)
+    towerKills = db.Column(db.Integer)
+    dominionVictoryScore = db.Column(db.Integer)
+    dragonKills = db.Column(db.Integer)
+    ban1 = db.Column(db.Integer)
+    ban2 = db.Column(db.Integer)
+    ban3 = db.Column(db.Integer)
+    ban4 = db.Column(db.Integer)
+    ban5 = db.Column(db.Integer)
+
+    def __init__(self, game_id, team, bans):
+        self.game_id = game_id
+        self.teamId = team.get("teamId")
+        self.firstDragon = team.get("firstDragon")
+        self.firstInhibitor = team.get("firstInhibitor")
+        self.win = team.get("win")
+        self.firstRiftHerald = team.get("firstRiftHerald")
+        self.firstBaron = team.get("firstBaron")
+        self.baronKills = team.get("baronKills")
+        self.riftHeraldKills = team.get("riftHeraldKills")
+        self.firstBlood = team.get("firstBlood")
+        self.firstTower = team.get("firstTower")
+        self.vilemawKills = team.get("vilemawKills")
+        self.inhibitorKills = team.get("inhibitorKills")
+        self.towerKills = team.get("towerKills")
+        self.dominionVictoryScore = team.get("dominionVictoryScore")
+        self.dragonKills = team.get("dragonKills")
+        try:
+            self.ban1 = bans[0]
+            self.ban2 = bans[1]
+            self.ban3 = bans[2]
+            self.ban4 = bans[3]
+            self.ban5 = bans[4]
+        except IndexError:
+            pass
+        

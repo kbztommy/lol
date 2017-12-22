@@ -4,7 +4,7 @@ from io import BytesIO
 from flask import current_app
 from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 import matplotlib.pyplot as plt
-from ..models import GameMatch, Game, GameParticipant, ParticipantItem, ParticipantPerk, ParticipantStatistics
+from ..models import GameMatch, Game, GameParticipant, ParticipantItem, ParticipantPerk, ParticipantStatistics, GameTeam
 from ..riot_api.game_api import get_matches_by_account_id, get_game
 from ..extensions import db, scheduler
 from ..filters import get_champion_id_map
@@ -62,10 +62,17 @@ def __add_game(game_id):
     participant_map = __get_participant_map(game_json.get('participants'))
     participant_do_list = __get_participant_list(
         game_id, participant_identity_map, participant_map)
+    team_list = game_json.get('teams')
     game_do = Game(**game_json)
 
     try:
         db.session.merge(game_do)
+
+        for team in team_list:
+            bans = __get_bans(team)
+            team_do = GameTeam(game_id, team, bans)
+            db.session.merge(team_do)
+
         for participant_do in participant_do_list:
             db.session.merge(participant_do)
         db.session.commit()
@@ -102,6 +109,16 @@ def query_statistics_champion_use(account_id, lane=''):
     canvas.print_png(png_output)
     return png_output
 
+
+def __get_bans(team):
+    ban_list = team.get('bans')
+    bans = list()
+    if bans is None:
+        return ''
+    else:
+        for ban in ban_list:
+            bans.append(str(ban.get('championId')))
+    return bans
 
 def __query_recent_champion_count_map(account_id, start_time, end_time, lane=''):
     champion_count_map = dict()

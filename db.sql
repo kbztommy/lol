@@ -233,3 +233,29 @@ CREATE TABLE `user` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `email` (`email`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+CREATE TABLE `game_team` (
+  `game_id` bigint(20) NOT NULL,
+  `teamId` int(11) NOT NULL,
+  `firstDragon` tinyint(4) DEFAULT '0',
+  `firstInhibitor` tinyint(4) DEFAULT '0',
+  `win` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `firstRiftHerald` tinyint(4) DEFAULT '0',
+  `firstBaron` tinyint(4) DEFAULT '0',
+  `baronKills` int(11) DEFAULT NULL,
+  `riftHeraldKills` int(11) DEFAULT NULL,
+  `firstBlood` tinyint(4) DEFAULT '0',
+  `firstTower` tinyint(4) DEFAULT '0',
+  `vilemawKills` int(11) DEFAULT NULL,
+  `inhibitorKills` int(11) DEFAULT NULL,
+  `towerKills` int(11) DEFAULT NULL,
+  `dominionVictoryScore` int(11) DEFAULT NULL,
+  `dragonKills` int(11) DEFAULT NULL,
+  `ban1` int(11) DEFAULT NULL,
+  `ban2` int(11) DEFAULT NULL,
+  `ban3` int(11) DEFAULT NULL,
+  `ban4` int(11) DEFAULT NULL,
+  `ban5` int(11) DEFAULT NULL,
+  PRIMARY KEY (`game_id`,`teamId`),
+  CONSTRAINT `FK_GAME_TEAM` FOREIGN KEY (`game_id`) REFERENCES `game` (`game_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
