@@ -439,26 +439,26 @@ class ParticipantStatistics(db.Model):
 
 class GameTeam(db.Model):
     game_id = db.Column(db.BigInteger,primary_key=True)
-    teamId = db.Column(db.Integer,primary_key=True)
+    teamId = db.Column(db.INTEGER,primary_key=True)
     firstDragon = db.Column(db.Boolean)
     firstInhibitor = db.Column(db.Boolean)
     win = db.Column(db.String(50))
     firstRiftHerald = db.Column(db.Boolean)
     firstBaron = db.Column(db.Boolean)
-    baronKills = db.Column(db.Integer)
-    riftHeraldKills = db.Column(db.Integer)
+    baronKills = db.Column(db.INTEGER)
+    riftHeraldKills = db.Column(db.INTEGER)
     firstBlood = db.Column(db.Boolean)
-    firstTower = db.Column(db.Integer)
-    vilemawKills = db.Column(db.Integer)
-    inhibitorKills = db.Column(db.Integer)
-    towerKills = db.Column(db.Integer)
-    dominionVictoryScore = db.Column(db.Integer)
-    dragonKills = db.Column(db.Integer)
-    ban1 = db.Column(db.Integer)
-    ban2 = db.Column(db.Integer)
-    ban3 = db.Column(db.Integer)
-    ban4 = db.Column(db.Integer)
-    ban5 = db.Column(db.Integer)
+    firstTower = db.Column(db.INTEGER)
+    vilemawKills = db.Column(db.INTEGER)
+    inhibitorKills = db.Column(db.INTEGER)
+    towerKills = db.Column(db.INTEGER)
+    dominionVictoryScore = db.Column(db.INTEGER)
+    dragonKills = db.Column(db.INTEGER)
+    ban1 = db.Column(db.INTEGER)
+    ban2 = db.Column(db.INTEGER)
+    ban3 = db.Column(db.INTEGER)
+    ban4 = db.Column(db.INTEGER)
+    ban5 = db.Column(db.INTEGER)
 
     def __init__(self, game_id, team, bans):
         self.game_id = game_id
@@ -486,3 +486,11 @@ class GameTeam(db.Model):
         except IndexError:
             pass
         
+class LmsPlayer(db.Model):
+    __tablename__ = 'lms_player'
+    accountId = db.Column(db.BigInteger,primary_key=True)
+    name = db.Column(db.String(45))
+    team = db.Column(db.String(45))
+    lane = db.Column(db.String(45))
+    def __init__(self, **kwargs):
+         super(LmsPlayer, self).__init__(**kwargs)

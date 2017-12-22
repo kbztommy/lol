@@ -4,7 +4,7 @@ from io import BytesIO
 from flask import current_app
 from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 import matplotlib.pyplot as plt
-from ..models import GameMatch, Game, GameParticipant, ParticipantItem, ParticipantPerk, ParticipantStatistics, GameTeam
+from ..models import GameMatch, Game, GameParticipant, ParticipantItem, ParticipantPerk, ParticipantStatistics, GameTeam, LmsPlayer
 from ..riot_api.game_api import get_matches_by_account_id, get_game
 from ..extensions import db, scheduler
 from ..filters import get_champion_id_map
@@ -38,6 +38,15 @@ def add_recent_game_match(account_id):
     except:
         db.session.rollback()
         raise
+
+
+def update_recent_game_match():
+    app = scheduler.app
+    app.logger.debug('prepare update lms player')
+    with app.app_context():
+        lms_player_list = LmsPlayer.query.all()
+        for lms_player in lms_player_list:
+            add_recent_game_match(lms_player.accountId)
 
 
 def query_not_yet_added_game_count():
@@ -119,6 +128,7 @@ def __get_bans(team):
         for ban in ban_list:
             bans.append(str(ban.get('championId')))
     return bans
+
 
 def __query_recent_champion_count_map(account_id, start_time, end_time, lane=''):
     champion_count_map = dict()
