@@ -1,30 +1,26 @@
-{% extends "bootstrap/base.html" %} 
-{% block title %}my_lol_app{% endblock %} 
- 
-        {% block content %}
-        
-            <main class="container">
-                <ol>
-                    {% for summoner in summoner_list %}
-                    <li>
-                        <a href="/get_summoner_detail/{{ summoner.name }}">{{ summoner.name }}</a>
-                    </li>
-                    {% endfor %}
-                </ol>
-            </main>
+{% extends "bootstrap/base.html" %} {% block title %}my_lol_app{% endblock %} {% block content %}
 
-            <form class="form-inline" action="/post_summoner" method="POST">
-                <div class="form-group">
-                        <label for="summonerName">Summoner Name</label>
-                        <input name="summonerName" type="text" class="form-control" id="summonerName" placeholder="Summoner Name" >
-                      </div>
-                <button class="btn btn-primary" type="submiit">add</button>
-            </form>
+<main class="container">
+    <section>
+        <form class="form-inline" action="/post_summoner" method="POST">
+            <div class="form-group">
+                <label for="summonerName">Summoner Name</label>
+                <input name="summonerName" type="text" class="form-control" id="summonerName" placeholder="Summoner Name">
+            </div>
+            <button class="btn btn-primary" type="submiit">add</button>
+        </form>
+    </section>
+    <section>
+        <ul>
+            {% for summoner in summoner_list %}
+            <li>
+                <a href="/get_summoner_detail/{{ summoner.name }}">{{ summoner.name }}</a>
+            </li>
+            {% endfor %}
+        </ul>
+    </section>
 
-            <h3><a href="/get_all_challenger" class="btn btn-primary">查詢菁英</a></h3>
-            <h3><a href="/put_recent_game_detail" class="btn btn-primary">系統對戰細節更新</a></h3>
-            <h3><a href="/put_item_code" class="btn btn-primary">裝備代碼更新</a></h3>
-            <h3><a href="/put_champion_code" class="btn btn-primary">英雄代碼更新</a></h3>
-            <h3><a href="/put_summoner_spell_code" class="btn btn-primary">招換師技能代碼更新</a></h3>
-            <h3>還有{{updated_count}}場對戰要更新</h3>
-        {% endblock %}    
+</main>
+
+
+{% endblock %}

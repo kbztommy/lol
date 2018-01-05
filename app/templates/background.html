@@ -1,0 +1,32 @@
+{% extends "bootstrap/base.html" %} {% block title %}後台管理{% endblock %} {% block content %}
+<h3>
+    <a href="/put_item_code" class="btn btn-primary">裝備代碼更新</a>
+</h3>
+<h3>
+    <a href="/put_champion_code" class="btn btn-primary">英雄代碼更新</a>
+</h3>
+<h3>
+    <a href="/put_summoner_spell_code" class="btn btn-primary">招換師技能代碼更新</a>
+</h3>
+<h3>
+    <button id="updateBtn" class="btn btn-primary">菁英列表更新</a>
+</h3>
+<script>
+    document.getElementById("updateBtn").onclick = function () {
+        var xhr = new XMLHttpRequest();
+        xhr.open("POST", "/post_challenger_league", true);
+        xhr.setRequestHeader('Content-Type', 'application/json');
+        xhr.send(JSON.stringify({
+
+        }));
+
+        xhr.onreadystatechange = function () {
+            if (this.readyState != 4) return;
+
+            if (this.status == 200) {
+                window.location.replace(this.responseText);
+            }
+        };
+    };
+
+</script> {% endblock %}

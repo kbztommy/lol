@@ -1,9 +1,6 @@
 {% extends "bootstrap/base.html" %} {% block title %}challenger league{% endblock %} {% block content %}
 <main class="container">
     <section>
-        <h3>
-            <button id="updateBtn" class="btn btn-primary">更新</a>
-        </h3>
         <table class="table table-striped">
             {% for challenger in challenger_list %}
             <tr>
@@ -18,22 +15,4 @@
 
     </section>
 </main>
-<script>
-    document.getElementById("updateBtn").onclick = function () {
-        var xhr = new XMLHttpRequest();
-        xhr.open("POST", "/post_challenger_league", true);
-        xhr.setRequestHeader('Content-Type', 'application/json');
-        xhr.send(JSON.stringify({
-
-        }));
-
-        xhr.onreadystatechange = function () {
-            if (this.readyState != 4) return;
-            
-            if (this.status == 200) {
-                window.location.replace(this.responseText);
-            }
-        };
-    };
-
-</script> {% endblock %}
+{% endblock %}

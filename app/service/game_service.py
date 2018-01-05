@@ -22,9 +22,12 @@ def update_recent_game_detail():
     with app.app_context():
         game_id_list = __get_need_update_game_id_list()
         for game_id in game_id_list:
-            app.logger.debug("%d had been update" % game_id)
+            app.logger.debug('%d had been update' % game_id)
             __add_game(game_id)
+        update_count = query_not_yet_added_game_count()
+        app.logger.debug('%d game(s) need to update' % update_count)
     app.logger.debug('end update game detail')
+
 
 def add_recent_game_match(account_id):
     match_list_json = get_matches_by_account_id(account_id)
@@ -48,6 +51,7 @@ def update_recent_game_match():
         for lms_player in lms_player_list:
             add_recent_game_match(lms_player.accountId)
     app.logger.debug('end update lms player')
+
 
 def query_not_yet_added_game_count():
     not_yet_added_game_count = db.session.execute(
