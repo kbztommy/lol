@@ -4,6 +4,7 @@ from . import main
 from ..service.summoner_service import query_all_summoners, query_one_summoner_by_name
 from ..service.summoner_service import update_summoner_by_account_id, add_summoner_by_name
 from ..service.game_service import query_statistics_champion_use
+from ..service.static_service import query_recent_version_list
 
 
 @main.route('/', methods=['GET', 'POST'])
@@ -23,7 +24,8 @@ def background():
 @login_required
 def get_summoner_detail(name):
     summoner = query_one_summoner_by_name(name)
-    return render_template('summoner_detail.html', summoner=summoner)
+    version_list = query_recent_version_list()
+    return render_template('summoner_detail.html', summoner=summoner, version_list=version_list)
 
 
 @main.route('/put_summoner_detail/<account_id>', methods=["GET"])

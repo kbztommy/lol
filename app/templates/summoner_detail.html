@@ -18,12 +18,21 @@
     </section>
     <br/>
     <section>
-        <div class="row" id="queryCondition">
+
+        <form class="form-inline">
             <img src="{{ url_for('static', filename='img/question.png') }}" id="selectedChamption" class="img-thumbnail" data-toggle="modal"
                 data-target="#champion_select" data-championId="-1">
             <img src="{{ url_for('static', filename='img/question.png') }}" id="selectedLane" class="img-thumbnail" data-toggle="modal"
                 data-target="#lane_select" data-championId="-1">
-        </div>
+
+            <select class="form-control">
+                {% for version in version_list %}
+                <option>{{version.get_version()}}</option>
+                {% endfor %}
+            </select>
+            <button class="btn btn-primary" type="submiit">submit</button>
+        </form>
+
 
 
         <div class="modal fade" id="champion_select" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
