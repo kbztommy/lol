@@ -1,8 +1,8 @@
 import os
 from flask import current_app as app
 from json import dumps, loads
-from ..riot_api.static_api import get_all_item_data, get_champion_data, get_summoner_spell_data_data
-from ..models import StaticData
+from ..riot_api.static_api import get_all_item_data, get_champion_data, get_summoner_spell_data_data, get_version_list_data
+from ..models import StaticData, LOLVERSION
 from ..extensions import db
 
 
@@ -51,3 +51,21 @@ def insert_static_data(data):
     except:
         db.session.rollback()
         raise
+
+
+def insert_version_list():
+    try:
+        version_list = get_version_list_data()
+        for version_str in version_list:
+            version = LOLVERSION(version_str)
+            db.session.merge(version)
+            db.session.commit()
+    except:
+        db.session.rollback()
+        raise
+
+
+def query_recent_version_list():
+    version_list = LOLVERSION.query.order_by(LOLVERSION.version1.desc()).order_by(
+        LOLVERSION.version2.desc()).order_by(LOLVERSION.version3.desc()).limit(10).all()
+    return version_list

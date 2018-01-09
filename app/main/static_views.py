@@ -2,7 +2,7 @@ import json
 from flask import render_template, redirect, url_for
 from flask_security import login_required
 from . import main
-from ..service.static_service import update_item_data, update_champion_data, update_summoner_spell_data
+from ..service.static_service import update_item_data, update_champion_data, update_summoner_spell_data, insert_version_list
 from ..filters import get_champion_id_map, champion_img_filter
 
 
@@ -24,6 +24,13 @@ def put_champion_code():
 @login_required
 def put_summoner_spell_code():
     update_summoner_spell_data()
+    return redirect(url_for('main.index'))
+
+
+@main.route('/put_version_list', methods=['GET'])
+@login_required
+def put_version_list():
+    insert_version_list()
     return redirect(url_for('main.index'))
 
 

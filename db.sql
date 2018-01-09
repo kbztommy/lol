@@ -267,3 +267,11 @@ CREATE TABLE `user` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `email` (`email`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+CREATE TABLE `lol_version` (
+  `version1` varchar(45) COLLATE utf8_unicode_ci NOT NULL,
+  `version2` varchar(45) COLLATE utf8_unicode_ci NOT NULL,
+  `version3` varchar(45) COLLATE utf8_unicode_ci NOT NULL,
+  PRIMARY KEY (`version1`,`version2`,`version3`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+

@@ -438,8 +438,8 @@ class ParticipantStatistics(db.Model):
 
 
 class GameTeam(db.Model):
-    game_id = db.Column(db.BigInteger,primary_key=True)
-    teamId = db.Column(db.INTEGER,primary_key=True)
+    game_id = db.Column(db.BigInteger, primary_key=True)
+    teamId = db.Column(db.INTEGER, primary_key=True)
     firstDragon = db.Column(db.Boolean)
     firstInhibitor = db.Column(db.Boolean)
     win = db.Column(db.String(50))
@@ -485,12 +485,30 @@ class GameTeam(db.Model):
             self.ban5 = bans[4]
         except IndexError:
             pass
-        
+
+
 class LmsPlayer(db.Model):
     __tablename__ = 'lms_player'
-    accountId = db.Column(db.BigInteger,primary_key=True)
+    accountId = db.Column(db.BigInteger, primary_key=True)
     name = db.Column(db.String(45))
     team = db.Column(db.String(45))
     lane = db.Column(db.String(45))
+
     def __init__(self, **kwargs):
-         super(LmsPlayer, self).__init__(**kwargs)
+        super(LmsPlayer, self).__init__(**kwargs)
+
+
+class LOLVERSION(db.Model):
+    __tablename__ = 'lol_version'
+    version1 = db.Column(db.INTEGER, primary_key=True)
+    version2 = db.Column(db.INTEGER, primary_key=True)
+    version3 = db.Column(db.INTEGER, primary_key=True)
+
+    def __init__(self, version):
+        version_part = version.split('.')
+        self.version1 = version_part[0]
+        self.version2 = version_part[1]
+        self.version3 = version_part[2]
+
+    def get_version(self):
+        return '%d.%d.%d' % (self.version1, self.version2, self.version3)
