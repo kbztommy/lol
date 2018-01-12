@@ -25,11 +25,13 @@
             <img src="{{ url_for('static', filename='img/question.png') }}" id="selectedLane" class="img-thumbnail" data-toggle="modal"
                 data-target="#lane_select" data-championId="-1">
 
-            <select class="form-control">
+            <select class="form-control" name="version">
                 {% for version in version_list %}
                 <option>{{version.get_version()}}</option>
                 {% endfor %}
             </select>
+            <input type="date" class="form-control" name="startDate">
+            <input type="date" class="form-control" name="endDate">
             <button class="btn btn-primary" type="submiit">submit</button>
         </form>
 
@@ -73,6 +75,36 @@
                 </div>
             </div>
         </div>
+    </section>
+    <section>
+        <table class="table table-striped">
+            <thead>
+                <th>champion</th>
+                <th>win rate</th>
+                <th>kills</th>
+                <th>deaths</th>
+                <th>assists</th>
+                <th>KDA</th>
+                <th>pick count</th>
+            </thead>
+            <tbody>
+                {% for win_rate in win_rate_list %}
+                <tr>
+                    <td>
+                        <img src="{{win_rate['championId']|champion_img_format}}" alt="{{win_rate['championId']|champion_id_format}}">
+                    </td>
+                    <td>{{(win_rate['winRate']*100)|round(2)}}%</td>
+                    <td>{{win_rate['avgKills']|round(2)}}</td>
+                    <td>{{win_rate['avgDeaths']|round(2)}}</td>
+                    <td>{{win_rate['avgAssists']|round(2)}}</td>
+                    <td>{% if win_rate['avgDeaths'] > 0 %} {{((win_rate['avgKills'] + win_rate['avgAssists'])/win_rate['avgDeaths'])|round(2)}}
+                        {% endif %}</td>
+                    <td>{{win_rate['pick_count']}}</td>
+
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
     </section>
 </div>
 
