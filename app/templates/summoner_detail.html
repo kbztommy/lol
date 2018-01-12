@@ -19,11 +19,11 @@
     <br/>
     <section>
 
-        <form class="form-inline">
-            <img src="{{ url_for('static', filename='img/question.png') }}" id="selectedChamption" class="img-thumbnail" data-toggle="modal"
-                data-target="#champion_select" data-championId="-1">
+        <form class="form-inline" id="filterForm">
+            <img src="{{ url_for('static', filename='img/question.png') }}" id="selectedChampion" class="img-thumbnail" data-toggle="modal"
+                data-target="#champion_select" data-champion-id="-1">
             <img src="{{ url_for('static', filename='img/question.png') }}" id="selectedLane" class="img-thumbnail" data-toggle="modal"
-                data-target="#lane_select" data-championId="-1">
+                data-target="#lane_select" data-lane-id="-1">
 
             <select class="form-control" name="version">
                 {% for version in version_list %}
@@ -32,7 +32,7 @@
             </select>
             <input type="date" class="form-control" name="startDate">
             <input type="date" class="form-control" name="endDate">
-            <button class="btn btn-primary" type="submiit">submit</button>
+            <button class="btn btn-primary" type="button" id="btnFilterWinRate">submit</button>
         </form>
 
 
@@ -62,15 +62,15 @@
                 <div class="modal-content">
                     <div class="modal-body" id="lanImgContainer">
                         <img src="{{ url_for('static', filename='img/Top_icon.png') }}" class="img-thumbnail laneImg" data-toggle="modal" data-target="#lane_select"
-                            data-championId="-1">
+                            data-lane-id="-1">
                         <img src="{{ url_for('static', filename='img/Jungle_icon.png') }}" class="img-thumbnail laneImg" data-toggle="modal" data-target="#lane_select"
-                            data-championId="-1">
+                            data-lane-id="-1">
                         <img src="{{ url_for('static', filename='img/Mid_icon.png') }}" class="img-thumbnail laneImg" data-toggle="modal" data-target="#lane_select"
-                            data-championId="-1">
+                            data-lane-id="-1">
                         <img src="{{ url_for('static', filename='img/Bot_icon.png') }}" class="img-thumbnail laneImg" data-toggle="modal" data-target="#lane_select"
-                            data-championId="-1">
+                            data-lane-id="-1">
                         <img src="{{ url_for('static', filename='img/Support_icon.png') }}" class="img-thumbnail laneImg" data-toggle="modal" data-target="#lane_select"
-                            data-championId="-1">
+                            data-lane-id="-1">
                     </div>
                 </div>
             </div>
@@ -111,54 +111,64 @@
 {% endblock %} {% block scripts %} {{super()}}
 <script>
     $(document).ready(function () {
-        $('.laneImg').click(function () {
-            $('#selectedLane').attr('src', $(this).attr('src'));
-        });
 
-        document.getElementById('championNameInput').addEventListener("input", function () {
+        $('#btnFilterWinRate').click(function () {
+            var formData = $('#filterForm').serializeArray();
+            formData.push({ name: "accountId", value: {{ summoner.account_id }} }, { name: "championId", value: $('#selectedChampion').data('champion-id') }, { name: "lane", value: $('#selectedLane').data('lane-id') });
+            console.log($.param(formData))
+        $.post("/post_filter_win_rate", $.param(formData)).done(function (data) {
+            console.log(data);
+        });
+    });
+
+    $('.laneImg').click(function () {
+        $('#selectedLane').attr('src', $(this).attr('src'));
+    });
+
+    document.getElementById('championNameInput').addEventListener("input", function () {
+        $('.championImgs').each(function () {
+            $(this).removeClass('hidden');
+        });
+        var filterStr = this.value.toLowerCase();
+        if (filterStr) {
             $('.championImgs').each(function () {
-                $(this).removeClass('hidden');
+                var championName = $(this).attr('data-championName').toLowerCase();
+                if (!championName.startsWith(filterStr)) {
+                    $(this).addClass('hidden');
+                }
             });
-            var filterStr = this.value.toLowerCase();
-            if (filterStr) {
-                $('.championImgs').each(function () {
-                    var championName = $(this).attr('data-championName').toLowerCase();
-                    if (!championName.startsWith(filterStr)) {
-                        $(this).addClass('hidden');
-                    }
+        }
+    });
+
+    $('#champion_select').on('show.bs.modal', function () {
+
+        if ($('#championImgContainer').children().length === 0) {
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", "/get_all_champion_img", true);
+            xhr.setRequestHeader('Content-Type', 'application/json');
+            xhr.send(JSON.stringify({
+
+            }));
+
+            xhr.onreadystatechange = function () {
+                if (this.readyState != 4) return;
+
+                if (this.status == 200) {
+                    var championImgs = JSON.parse(this.responseText);
+                    Object.keys(championImgs).forEach(function (key) {
+                        var imgUrl = championImgs[key];
+                        var tempLenth = "champion/".length;
+                        var championName = imgUrl.substr(imgUrl.indexOf("champion/") + tempLenth, imgUrl.lastIndexOf(".png") - imgUrl.indexOf("champion/") - tempLenth);
+                        var imgElement = '<img src="' + imgUrl + '"  class="img-thumbnail championImgs" data-dismiss="modal" data-champion-id="' + key + '" data-championName = "' + championName + '">';
+                        $('#championImgContainer').append(imgElement);
+                    })
+                }
+                $('.championImgs').on('click', function () {
+                    $('#selectedChampion').attr('src', $(this).attr('src'));
+                    $('#selectedChampion').data('champion-id', $(this).attr('data-champion-id'));
                 });
-            }
-        });
-
-        $('#champion_select').on('show.bs.modal', function () {
-
-            if ($('#championImgContainer').children().length === 0) {
-                var xhr = new XMLHttpRequest();
-                xhr.open("POST", "/get_all_champion_img", true);
-                xhr.setRequestHeader('Content-Type', 'application/json');
-                xhr.send(JSON.stringify({
-
-                }));
-
-                xhr.onreadystatechange = function () {
-                    if (this.readyState != 4) return;
-
-                    if (this.status == 200) {
-                        var championImgs = JSON.parse(this.responseText);
-                        Object.keys(championImgs).forEach(function (key) {
-                            var imgUrl = championImgs[key];
-                            var tempLenth = "champion/".length;
-                            var championName = imgUrl.substr(imgUrl.indexOf("champion/") + tempLenth, imgUrl.lastIndexOf(".png") - imgUrl.indexOf("champion/") - tempLenth);
-                            var imgElement = '<img src="' + imgUrl + '"  class="img-thumbnail championImgs" data-dismiss="modal" data-championId="' + key + '" data-championName = "' + championName + '">';
-                            $('#championImgContainer').append(imgElement);
-                        })
-                    }
-                    $('.championImgs').on('click', function () {
-                        $('#selectedChamption').attr('src', $(this).attr('src'));
-                        $('#selectedChamption').attr('data-championId', $(this).attr('data-championId'));
-                    });
-                };
-            }
-        })
+            };
+        }
+    })
     });
 </script> {% endblock %}

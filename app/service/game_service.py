@@ -123,14 +123,26 @@ def query_statistics_champion_use(account_id, lane=''):
     return png_output
 
 
-def get_win_rate(account_id, version):
+def get_win_rate(account_id, version='', startDate='', endDate='', champion_id=-1):
     condition_version = ''
 
     if version.strip():
-        condition_version = 'and g.game_version like \'{}{}\''.format(
+        condition_version = condition_version + 'and g.game_version like \'{}{}\''.format(
             version, '%')
+    if startDate.strip():
+        condition_version = condition_version + \
+            'and g.game_creation > {}'.format(startDate)
 
-    rows = db.session.execute('select gp.champion_id as championId,sum(gp.win)/count(0) as winRate,avg(gp.kills) as avgKills,avg(gp.deaths)as avgDeaths,avg(gp.assists) as avgAssists,count(0) as pick_count from game g join game_participant gp on g.game_id = gp.game_id and gp.account_id = %d %s group by gp.champion_id order by pick_count desc' % (account_id, condition_version))
+    if endDate.strip():
+        condition_version = condition_version + \
+            'and g.game_creation < {}'.format(endDate)
+
+    if champion_id > 0:
+        condition_version = condition_version + \
+            'and gp.champion_id = {}'.format(champion_id)
+    exe_sql = 'select gp.champion_id as championId,sum(gp.win)/count(0) as winRate,avg(gp.kills) as avgKills,avg(gp.deaths)as avgDeaths,avg(gp.assists) as avgAssists,count(0) as pick_count from game g join game_participant gp on g.game_id = gp.game_id and gp.account_id = %d where g.game_duration >300 %s group by gp.champion_id order by pick_count desc' % (account_id, condition_version)
+    current_app.logger.debug(exe_sql)
+    rows = db.session.execute(exe_sql)
     list_of_dicts = [dict(row.items()) for row in rows]
     return list_of_dicts
 

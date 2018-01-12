@@ -1,3 +1,5 @@
+import json
+import decimal
 from flask import render_template, request,  redirect, url_for, make_response, current_app
 from flask_security import login_required
 from . import main
@@ -53,3 +55,23 @@ def post_summoner():
     summoner_name = request.values['summonerName']
     add_summoner_by_name(summoner_name)
     return redirect(url_for('main.index'))
+
+
+class DecimalEncoder(json.JSONEncoder):
+    def default(self, o):
+        if isinstance(o, decimal.Decimal):
+            return '{:.2f}'.format(round(float(o), 2))
+        return super(DecimalEncoder, self).default(o)
+
+
+@main.route('/post_filter_win_rate', methods=["POST"])
+@login_required
+def post_filter_win_rate():
+    start_date = request.values['startDate']
+    end_date = request.values['endDate']
+    account_id = int(request.values['accountId'])
+    champion_id = int(request.values['championId'])
+    version = request.values['version']
+    win_rate_list = get_win_rate(
+        account_id, version, start_date, end_date, champion_id)
+    return json.dumps(win_rate_list, cls=DecimalEncoder)
