@@ -1,8 +1,10 @@
 import json
 import decimal
+from collections import OrderedDict
 from flask import render_template, request,  redirect, url_for, make_response, current_app
 from flask_security import login_required
 from . import main
+from ..filters import champion_img_filter
 from ..service.summoner_service import query_all_summoners, query_one_summoner_by_name
 from ..service.summoner_service import update_summoner_by_account_id, add_summoner_by_name
 from ..service.game_service import query_statistics_champion_use, get_win_rate
@@ -26,7 +28,9 @@ def background():
 @login_required
 def get_summoner_detail(name):
     summoner = query_one_summoner_by_name(name)
-    version_list = query_recent_version_list()
+    full_version_list = query_recent_version_list()
+    version_list = list(OrderedDict.fromkeys(full_version_list))
+    version_set = set(item.get_version() for item in full_version_list)
     win_rate_list = get_win_rate(
         summoner.account_id, '')
     return render_template('summoner_detail.html', summoner=summoner, version_list=version_list, win_rate_list=win_rate_list)
@@ -60,7 +64,7 @@ def post_summoner():
 class DecimalEncoder(json.JSONEncoder):
     def default(self, o):
         if isinstance(o, decimal.Decimal):
-            return '{:.2f}'.format(round(float(o), 2))
+            return '{:f}'.format(float(o))
         return super(DecimalEncoder, self).default(o)
 
 
@@ -74,4 +78,8 @@ def post_filter_win_rate():
     version = request.values['version']
     win_rate_list = get_win_rate(
         account_id, version, start_date, end_date, champion_id)
+    for win_rate in win_rate_list:
+        win_rate['championId'] = champion_img_filter(int(win_rate['championId']))
     return json.dumps(win_rate_list, cls=DecimalEncoder)
+    
+        

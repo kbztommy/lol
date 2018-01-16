@@ -87,7 +87,7 @@
                 <th>KDA</th>
                 <th>pick count</th>
             </thead>
-            <tbody>
+            <tbody id="winRateTb">
                 {% for win_rate in win_rate_list %}
                 <tr>
                     <td>
@@ -111,6 +111,7 @@
 {% endblock %} {% block scripts %} {{super()}}
 <script>
     $(document).ready(function () {
+        
 
         $('#btnFilterWinRate').click(function () {
             var formData = $('#filterForm').serializeArray();
@@ -118,6 +119,20 @@
             console.log($.param(formData))
         $.post("/post_filter_win_rate", $.param(formData)).done(function (data) {
             console.log(data);
+            winRateObj = JSON.parse(data);
+            $('#winRateTb').empty();
+            winRateObj.forEach(function(winRateData){
+                var trElement = document.createElement('tr');
+                var tdImg = '<td><img src="'+winRateData.championId+'"></td>';
+                var tdWinRate = '<td>'+(parseFloat(winRateData.winRate * 100)).toFixed(2)+'%</td>';
+                var tdAvgKills = '<td>'+parseFloat(winRateData.avgKills).toFixed(2)+'</td>';
+                var tdAvgDeaths = '<td>'+parseFloat(winRateData.avgDeaths).toFixed(2)+'</td>';
+                var tdAvgAssists = '<td>'+parseFloat(winRateData.avgAssists).toFixed(2)+'</td>';
+                var tdKDA = '<td>'+Math.round(100*(parseFloat(winRateData.avgKills)+parseFloat(winRateData.avgAssists))/parseFloat(winRateData.avgDeaths))/100+'</td>';
+                var tdPick_count =  '<td>'+winRateData.pick_count+'</td>';
+                $(trElement).append(tdImg,tdWinRate,tdAvgKills,tdAvgDeaths,tdAvgAssists,tdKDA,tdPick_count);
+                $('#winRateTb').append(trElement);
+            });
         });
     });
 

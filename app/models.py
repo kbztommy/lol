@@ -511,4 +511,4 @@ class LOLVERSION(db.Model):
         self.version3 = version_part[2]
 
     def get_version(self):
-        return '%d.%d.%d' % (self.version1, self.version2, self.version3)
+        return '%d.%d' % (self.version1, self.version2)
