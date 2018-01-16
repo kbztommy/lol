@@ -1,7 +1,7 @@
 from flask import render_template, redirect, url_for
 from flask_security import login_required
-from . import main
-from ..service.league_service import update_challenger_league, query_all_challenger
+from app.main import main
+from app.service.league_service import update_challenger_league, query_all_challenger
 
 
 @main.route('/get_all_challenger', methods=['GET'])

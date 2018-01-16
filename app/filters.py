@@ -1,7 +1,7 @@
 from datetime import datetime
 import json
 from flask import current_app as app
-from .models import ItemCode, StaticData
+from app.models import StaticData
 
 
 __champion_id_map = dict()

@@ -2,10 +2,10 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from config import config
 from flask_security import Security, SQLAlchemyUserDatastore
-from .extensions import db, security, bootstrap, scheduler
-from .main import main as main_blueprint
-from .filters import time_format_filter, champion_id_filter, item_id_filter, item_img_filter, champion_img_filter
-from .filters import summoner_spell_id_filter, summoner_spell_img_filter
+from app.extensions import db, security, bootstrap, scheduler
+from app.main import main as main_blueprint
+from app.filters import time_format_filter, champion_id_filter, item_id_filter, item_img_filter, champion_img_filter
+from app.filters import summoner_spell_id_filter, summoner_spell_img_filter
 
 
 def create_app(config_name):

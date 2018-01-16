@@ -1,14 +1,14 @@
 import json
 import decimal
 from collections import OrderedDict
-from flask import render_template, request,  redirect, url_for, make_response, current_app
+from flask import render_template, request, redirect, url_for, make_response
 from flask_security import login_required
-from . import main
-from ..filters import champion_img_filter
-from ..service.summoner_service import query_all_summoners, query_one_summoner_by_name
-from ..service.summoner_service import update_summoner_by_account_id, add_summoner_by_name
-from ..service.game_service import query_statistics_champion_use, get_win_rate
-from ..service.static_service import query_recent_version_list
+from app.main import main
+from app.filters import champion_img_filter
+from app.service.summoner_service import query_all_summoners, query_one_summoner_by_name
+from app.service.summoner_service import update_summoner_by_account_id, add_summoner_by_name
+from app.service.game_service import query_statistics_champion_use, get_win_rate
+from app.service.static_service import query_recent_version_list
 
 
 @main.route('/', methods=['GET', 'POST'])
@@ -29,7 +29,8 @@ def background():
 def get_summoner_detail(name):
     summoner = query_one_summoner_by_name(name)
     full_version_list = query_recent_version_list()
-    version_list = list(OrderedDict.fromkeys(item.get_version() for item in full_version_list))
+    version_list = list(OrderedDict.fromkeys(item.get_version()
+                                             for item in full_version_list))
     win_rate_list = get_win_rate(
         summoner.account_id, '')
     return render_template('summoner_detail.html', summoner=summoner, version_list=version_list, win_rate_list=win_rate_list)
@@ -78,7 +79,6 @@ def post_filter_win_rate():
     win_rate_list = get_win_rate(
         account_id, version, start_date, end_date, champion_id)
     for win_rate in win_rate_list:
-        win_rate['championId'] = champion_img_filter(int(win_rate['championId']))
+        win_rate['championId'] = champion_img_filter(
+            int(win_rate['championId']))
     return json.dumps(win_rate_list, cls=DecimalEncoder)
-    
-        

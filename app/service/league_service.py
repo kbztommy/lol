@@ -1,6 +1,6 @@
-from ..riot_api.league_api import get_challenger_leagues
-from ..models import League, LeagueItem
-from ..extensions import db
+from app.riot_api.league_api import get_challenger_leagues
+from app.models import League, LeagueItem
+from app.extensions import db
 
 
 def update_challenger_league():

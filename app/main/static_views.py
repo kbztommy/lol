@@ -1,9 +1,10 @@
 import json
-from flask import render_template, redirect, url_for
+from flask import redirect, url_for
 from flask_security import login_required
-from . import main
-from ..service.static_service import update_item_data, update_champion_data, update_summoner_spell_data, insert_version_list
-from ..filters import get_champion_id_map, champion_img_filter
+from app.main import main
+from app.service.static_service import update_item_data, update_champion_data
+from app.service.static_service import update_summoner_spell_data, insert_version_list
+from app.filters import get_champion_id_map, champion_img_filter
 
 
 @main.route('/put_item_code', methods=['GET'])

@@ -4,10 +4,11 @@ from io import BytesIO
 from flask import current_app
 from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 import matplotlib.pyplot as plt
-from ..models import GameMatch, Game, GameParticipant, ParticipantItem, ParticipantPerk, ParticipantStatistics, GameTeam, LmsPlayer
-from ..riot_api.game_api import get_matches_by_account_id, get_game
-from ..extensions import db, scheduler
-from ..filters import get_champion_id_map
+from app.models import GameMatch, Game, GameParticipant, ParticipantItem
+from app.models import ParticipantPerk, ParticipantStatistics, GameTeam, LmsPlayer
+from app.riot_api.game_api import get_matches_by_account_id, get_game
+from app.extensions import db, scheduler
+from app.filters import get_champion_id_map
 
 
 def query_game_match_list(account_id):

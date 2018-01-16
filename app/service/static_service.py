@@ -1,9 +1,10 @@
 import os
+from json import dumps
 from flask import current_app as app
-from json import dumps, loads
-from ..riot_api.static_api import get_all_item_data, get_champion_data, get_summoner_spell_data_data, get_version_list_data
-from ..models import StaticData, LOLVERSION
-from ..extensions import db
+from app.riot_api.static_api import get_all_item_data, get_champion_data
+from app.riot_api.static_api import get_summoner_spell_data_data, get_version_list_data
+from app.models import StaticData, LOLVERSION
+from app.extensions import db
 
 
 def update_item_data():

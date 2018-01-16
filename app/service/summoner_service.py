@@ -1,6 +1,6 @@
-from ..extensions import db
-from ..riot_api.summoner_api import get_summoner_by_account_id, get_summoner_by_summoner_name
-from ..models import Summoner
+from app.extensions import db
+from app.riot_api.summoner_api import get_summoner_by_account_id, get_summoner_by_summoner_name
+from app.models import Summoner
 
 
 def query_all_summoners():
