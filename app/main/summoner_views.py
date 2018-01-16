@@ -29,8 +29,7 @@ def background():
 def get_summoner_detail(name):
     summoner = query_one_summoner_by_name(name)
     full_version_list = query_recent_version_list()
-    version_list = list(OrderedDict.fromkeys(full_version_list))
-    version_set = set(item.get_version() for item in full_version_list)
+    version_list = list(OrderedDict.fromkeys(item.get_version() for item in full_version_list))
     win_rate_list = get_win_rate(
         summoner.account_id, '')
     return render_template('summoner_detail.html', summoner=summoner, version_list=version_list, win_rate_list=win_rate_list)
